@@ -1,0 +1,53 @@
+import math
+import tensorflow as tf
+import numpy as np
+import pylab as plt
+import numpy
+import pandas
+
+def basicImport():
+
+    sources = ["cleveland","long_beach","switzerland"]
+    #sources = ["cleveland"]
+
+
+
+    LABELS = ['age',
+    'sex',
+    'cp',
+    'trestbps',
+    'chol',
+    'fbs',
+    'restecg',
+    'thalach',
+    'exang',
+    'oldpeak',
+    'slope',
+    'ca',
+    'thal',
+    'prediction']
+
+
+
+    data = pandas.DataFrame()
+    for source in sources:
+        output = pandas.read_csv(source+".csv",delimiter=",",na_values  = '?',names =LABELS )
+
+        if (data.empty):
+            data = output
+        else:
+            data = data.append(output)
+
+    return data
+
+def isPositive(x):
+    if x > 0:
+        return 1
+    else:
+        return 0
+
+
+if __name__ == '__main__':
+    data = basicImport();
+    print(data)
+    print("CSV Output")
