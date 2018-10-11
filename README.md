@@ -1,6 +1,6 @@
 # data-mining-proj
 
-###Instructions to Set Up
+### Instructions to Set Up
 
 1. Make sure you have Anaconda  (latest) installed
 2. On your conda prompt, type: `conda env create --file dependencies.txt `
