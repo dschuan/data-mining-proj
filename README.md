@@ -16,6 +16,7 @@
 3. After that, in main.py, import the python module function and store the output in a variable so that the next person down the pipeline can easily access your data if needed.
 4. If you need an example, you can look at the `importcsv.py` and `processdata.py` packages, and how I implemented those functions as a one liner in the main.py code
 5. Pull before pushing, or create your own branch to ensure no code clashes exist! It is a pain in the ass to resolve merge errors.
+6. If you ever import a new dependency, remember to import it using conda e.g. `conda install PACKAGE_NAME`. After that, update the dependency using `conda list --explicit > dependencies.txt`
 
 
 Have a good time :)
