@@ -28,6 +28,12 @@ def createTrainingSet(data):
 
     return testX, testY, trainX, trainY
 
+def isPositive(x):
+    if x > 0:
+        return 1
+    else:
+        return 0
+
 if __name__ == '__main__':
     print("Data Cleaning Output")
     print("training set size: ", trainX.shape[0], " test set size: ", testX.shape[0] )
