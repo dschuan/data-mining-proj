@@ -17,6 +17,7 @@
 4. If you need an example, you can look at the `importcsv.py` and `processdata.py` packages, and how I implemented those functions as a one liner in the main.py code
 5. Pull before pushing, or create your own branch to ensure no code clashes exist! It is a pain in the ass to resolve merge errors.
 6. If you ever import a new dependency, remember to import it using conda e.g. `conda install PACKAGE_NAME`. After that, update the dependency using `conda list --explicit > dependencies.txt`
+7. If there is a dependency change, key in the command `conda install --yes --file dependencies.txt` while in the mining environment
 
 
 Have a good time :)
