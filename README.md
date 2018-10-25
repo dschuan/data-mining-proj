@@ -4,7 +4,7 @@
 
 1. Make sure you have Anaconda  (latest) installed
 2. For existing user, run `conda update conda`, then `conda update --all` to make sure the latest packages are installed
-2. On your conda prompt, type: `conda create --name mining --file dependencies.txt `
+2. On your conda prompt, type: `conda create --name mining --file dependencies.txt `. If you desire to run python3.6, use: `conda create --name mining python=3.6 --file dependencies.txt ` 
 3. Navigate to the project directory, and activate the environment
    For Windows: `activate mining`
    For Mac/Linux: `source activate mining`

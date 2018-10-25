@@ -30,7 +30,7 @@ def separateImport():
 
     output = dict(zip(sources, output))
     return output
-    
+
 def basicImport():
 
     #sources = ["cleveland"]

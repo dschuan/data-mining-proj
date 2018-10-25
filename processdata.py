@@ -29,7 +29,7 @@ def fillData(data_dict, fill_method = 'mode'):
     output = pd.DataFrame()
     datas = list(data_dict.values())
 
-    
+
     for df in datas:
         for column in df.iloc[:, :-1]:
             nasum = df[column].isna().sum()
@@ -39,7 +39,7 @@ def fillData(data_dict, fill_method = 'mode'):
             output = df
         else:
             output = output.append(df, ignore_index=True)
-    print(output.shape)
+
     return output
 
 

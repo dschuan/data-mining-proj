@@ -7,10 +7,10 @@ import importcsv as ic
 import nn
 #Insert main code here
 if __name__ == '__main__':
-    data = ic.basicImport()
+    data = ic.separateImport()
     data = procd.fillData(data, fill_method="median")
     # in above function, fill_method has 'median', 'mode', and 'mean' options to fill data with the median, mode or mean
-    
+
     testX, testY, trainX, trainY = procd.createTrainingSet(data)
     print(data)
 
