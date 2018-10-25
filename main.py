@@ -5,6 +5,7 @@ import bayesian
 import processdata as procd
 import importcsv as ic
 import nn
+import preprocessing
 #Insert main code here
 if __name__ == '__main__':
     data = ic.separateImport()
@@ -24,3 +25,7 @@ if __name__ == '__main__':
 
     bayesPredictions = bayesian.naiveBayes(testX, testY, trainX, trainY)
     print("bayesPredictions",bayesPredictions)
+
+    X_data, Y_data = preprocessing.createFullSet(data)
+    optimal_n, X_reduced, pca, ss = preprocessing.manualSearchPCA(X_data)
+    print('Best number of Components for pca:', optimal_n)
