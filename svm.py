@@ -9,12 +9,9 @@ import numpy as np
 from pylab import plt
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVC
+import pickle
 
-def gridSearchSVM():
-    data = ic.separateImport()
-    data = procd.fillData(data, fill_method="median")
-
-    testX, testY, trainX, trainY = procd.createTrainingSet(data)
+def gridSearchSVM(testX, testY, trainX, trainY):
 
     svc = SVC()
     param_grid = [
@@ -25,4 +22,18 @@ def gridSearchSVM():
     gs = GridSearchCV(svc, param_grid, verbose=2)
     gs.fit(trainX, trainY)
     score = gs.score(testX,testY)
+    pickle.dump(gs, 'svm.pickle')
     return score
+if __name__=='__main__':
+    data = ic.separateImport()
+    data = procd.fillData(data, fill_method="median")
+    testX, testY, trainX, trainY = procd.createTrainingSet(data)
+    score = gridSearchSVM(testX, testY, trainX, trainY )
+    print(score)
+# def predictSVM(testX, testY, trainX, trainY, useTrainedModel=False):
+#     if useTrainedModel:
+#         try:
+#             gs=pickle.load('svm.pickle')
+#             gs.predict(testX)
+#         except:
+#             continue
