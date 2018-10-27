@@ -30,7 +30,10 @@ if __name__ == '__main__':
 
     predictions, gs = svm.svmPredict(testX, testY, trainX, trainY, useTrainedModel = True)
     print("SVMpredictions", predictions)
-    
+    #gs is the grid search model that i use to find the best parameters for the svm.
+    #It automatically uses k-fold cross validation to find the best parameters
+    #we can call print(gs.best_params_) to determine what params were used for this model
+
     X_data, Y_data = preprocessing.createFullSet(data)
     optimal_n, X_reduced, pca, ss = preprocessing.manualSearchPCA(X_data)
     print('Best number of Components for pca:', optimal_n)

@@ -4,7 +4,7 @@
 
 1. Make sure you have Anaconda  (latest) installed
 2. For existing user, run `conda update conda`, then `conda update --all` to make sure the latest packages are installed
-2. On your conda prompt, type: `conda create --name mining --file dependencies.txt `. If you desire to run python3.6, use: `conda create --name mining python=3.6 --file dependencies.txt ` 
+2. On your conda prompt, type: `conda create --name mining --file dependencies.txt `. If you desire to run python3.6, use: `conda create --name mining python=3.6 --file dependencies.txt `
 3. Navigate to the project directory, and activate the environment
    For Windows: `activate mining`
    For Mac/Linux: `source activate mining`
@@ -21,3 +21,11 @@
 
 
 Have a good time :)
+
+
+### Notes on creating machine learning functions
+1. For each classifier you are creating, e.g. svm, random forest etc., please create a predict function that takes in testX and returns the corresponding predictions
+2. For example, create a function `bayesPredictions = bayesian.naiveBayes(testX, testY, trainX, trainY)` where `bayesPredictions` will represent the classifications of testX.
+3. Place this function in main.py
+4. You can look at the current code in main.py to get an idea
+ 
