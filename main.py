@@ -1,11 +1,13 @@
 #Import all the modules here
 import pandas as pd
 
-import bayesian
 import processdata as procd
 import importcsv as ic
+import bayesian
 import nn
 import preprocessing
+import svm
+
 #Insert main code here
 if __name__ == '__main__':
     data = ic.separateImport()
@@ -26,6 +28,9 @@ if __name__ == '__main__':
     bayesPredictions = bayesian.naiveBayes(testX, testY, trainX, trainY)
     print("bayesPredictions",bayesPredictions)
 
+    predictions, gs = svm.svmPredict(testX, testY, trainX, trainY, useTrainedModel = True)
+    print("SVMpredictions", predictions)
+    
     X_data, Y_data = preprocessing.createFullSet(data)
     optimal_n, X_reduced, pca, ss = preprocessing.manualSearchPCA(X_data)
     print('Best number of Components for pca:', optimal_n)
