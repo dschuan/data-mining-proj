@@ -15,10 +15,10 @@ def gridSearchSVM(testX, testY, trainX, trainY):
 
     svc = SVC()
     param_grid = [
-    #   {'C': [1, 10, 100, 1000], 'kernel': ['linear']},
-    #   {'C': [1, 10, 100, 1000], 'gamma': [0.01, 0.001, 0.0001], 'kernel': ['rbf', 'sigmoid']},
-    #   {'C': [1, 10, 100, 1000], 'gamma': [0.01, 0.001, 0.0001], 'degree':[2, 3, 4], 'kernel': ['poly']}
-      {'C': [1, 10], 'kernel': ['linear']}
+      {'C': [1, 10, 100, 1000], 'kernel': ['linear']},
+      {'C': [1, 10, 100, 1000], 'gamma': [0.01, 0.001, 0.0001], 'kernel': ['rbf', 'sigmoid']},
+      {'C': [1, 10, 100, 1000], 'gamma': [0.01, 0.001, 0.0001], 'degree':[2, 3, 4], 'kernel': ['poly']}
+
     ]
     gs = GridSearchCV(svc, param_grid, verbose=2, n_jobs=4)
     gs.fit(trainX, trainY)
