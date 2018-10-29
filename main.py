@@ -1,6 +1,7 @@
 #Import all the modules here
 import pandas as pd
 
+from sklearn.ensemble import RandomForestClassifier
 import processdata as procd
 import importcsv as ic
 import bayesian
@@ -8,6 +9,7 @@ import nn
 import preprocessing
 import svm
 import arm as arm
+import decisiontree as dt
 
 #Insert main code here
 if __name__ == '__main__':
@@ -41,3 +43,6 @@ if __name__ == '__main__':
     X_data, Y_data = preprocessing.createFullSet(data)
     optimal_n, X_reduced, pca, ss = preprocessing.manualSearchPCA(X_data)
     print('Best number of Components for pca:', optimal_n)
+
+    randforestPred = dt.randomForestClassify(testX, testY, trainX, trainY)
+    print('Random forest', randforestPred)
