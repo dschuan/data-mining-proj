@@ -26,7 +26,7 @@ LABELS = ['age',
 'thal',
 'prediction']
 
-def neuralNet(testX, testY, trainX = [], trainY = [], useTrainedModel = False):
+def neuralNet(testX, testY, trainX = [], trainY = [], useTrainedModel = False, modelName = "model"):
 	NUM_FEATURES = testX.shape[1]
 
 	NUM_CLASSES = 2
@@ -51,7 +51,7 @@ def neuralNet(testX, testY, trainX = [], trainY = [], useTrainedModel = False):
 
 
 
-
+	tf.reset_default_graph()
 	# Create the model
 	x = tf.placeholder(tf.float32, [None, NUM_FEATURES])
 	y_ = tf.placeholder(tf.float32, [None, NUM_CLASSES])
@@ -105,12 +105,12 @@ def neuralNet(testX, testY, trainX = [], trainY = [], useTrainedModel = False):
 
 	correct_prediction = tf.cast(tf.equal(tf.argmax(logits, 1), tf.argmax(y_, 1)), tf.float32)
 	accuracy = tf.reduce_mean(correct_prediction)
+
 	saver = tf.train.Saver()
 
 	with tf.Session() as sess:
-
 		if(useTrainedModel):
-			saver.restore(sess, "./model.ckpt")
+			saver.restore(sess, "./"  + modelName + ".ckpt")
 			predictions = sess.run(logits,{ x: testX})
 			return np.argmax(predictions, axis=1)
 
@@ -129,7 +129,7 @@ def neuralNet(testX, testY, trainX = [], trainY = [], useTrainedModel = False):
 					print('iter %d: accuracy %g'%(i, train_acc[i]))
 				test_acc.append(accuracy.eval(feed_dict={x: testX, y_: testY}))
 
-			save_path = saver.save(sess, "./model.ckpt")
+			save_path = saver.save(sess, "./" + modelName+ ".ckpt")
 			print("Model saved in path: %s" % save_path)
 
 			max_accuracy = max(test_acc)
@@ -149,5 +149,4 @@ def neuralNet(testX, testY, trainX = [], trainY = [], useTrainedModel = False):
 			plt.show()
 
 			predictions = sess.run(logits,{ x: testX})
-
 			return np.argmax(predictions, axis=1)

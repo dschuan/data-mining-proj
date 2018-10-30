@@ -23,7 +23,6 @@ LABELS = ['age',
 'prediction']
 
 def separateImport():
-    sources = ["cleveland"]
     output = []
     for source in sources:
         temp = pandas.read_csv(source+".csv", delimiter="," , na_values = '?', names = LABELS )
