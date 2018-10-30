@@ -41,7 +41,7 @@ def preprocess_data_for_arm():
     
 def generate_arm_rules():
     # accuracy of rule
-    minsup = 0.7 # adjust
+    minsup = 0.5 # adjust
     minlen = 2 # adjust
     txs_yes, txs_no = preprocess_data_for_arm()
     print("no presence of heart disease")
@@ -54,5 +54,14 @@ def generate_arm_rules():
         if len(itemset) > minlen:
             print(itemset)
 
+    # what to return?
+    return None
+
+def show_data():
+    data = ic.separateImport()
+    data = procd.fillData(data, fill_method="median")
+    print(data)
+
 if __name__ == '__main__':
-    generate_arm_rules()
+    # generate_arm_rules()
+    show_data()

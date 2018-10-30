@@ -25,7 +25,7 @@ if __name__ == '__main__':
     #Sandbox your code here, before transfering it into your own python file
 
     min_sup = 0 #set it to be smth
-    associateRuleMiningPredictions = arm.generate_rules(min_sup)
+    associateRuleMiningPredictions = arm.generate_arm_rules()
     print("Associate Rule Mining Predictions", associateRuleMiningPredictions)
 
     nnPredictions = nn.neuralNet(testX, testY, trainX, trainY, useTrainedModel = True)
