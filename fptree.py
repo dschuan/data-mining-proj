@@ -1,6 +1,6 @@
 from collections import defaultdict, namedtuple
 
-def find_frequent_itemsets(transactions, minimum_support, include_support=False):
+def find_frequent_itemsets(transactions, minimum_support, include_support=False, df=False):
     """
     Find frequent itemsets in the given transactions using FP-growth. This
     function returns a generator instead of an eagerly-populated list of items.
@@ -16,9 +16,15 @@ def find_frequent_itemsets(transactions, minimum_support, include_support=False)
 
     # Load the passed-in transactions and count the support that individual
     # items have.
-    for transaction in transactions:
-        for item in transaction:
-            items[item] += 1
+    if (df):
+        for index, transaction in transactions.iterrows():
+            for item in transaction:
+                items[item] += 1
+    else:
+        for transaction in transactions:
+            for item in transaction:
+                items[item] += 1
+
 
     # Remove infrequent items from the item support dictionary.
     items = dict((item, support) for item, support in items.items()
@@ -33,8 +39,12 @@ def find_frequent_itemsets(transactions, minimum_support, include_support=False)
         return transaction
 
     master = FPTree()
-    for transaction in map(clean_transaction, transactions):
-        master.add(transaction)
+    if (df):
+        for index, transaction in transactions.iterrows():
+            master.add(clean_transaction(transaction))
+    else:
+        for transaction in map(clean_transaction, transactions):
+            master.add(transaction)
 
     def find_with_suffix(tree, suffix):
         for item, nodes in tree.items():

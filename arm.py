@@ -35,24 +35,24 @@ def preprocess_data_for_arm():
     for label in ic.LABELS[:-1]:
         data[label] = label + " " + data[label].astype(str)
 
-    data_yes = data.loc[data['prediction'] >= 1]
-    data_no = data.loc[data['prediction'] == 0]
-    # return data_yes, data_no
-    return data
-
+    data_yes = data.loc[data['prediction'] > 0].drop(['prediction'], axis=1)
+    data_no = data.loc[data['prediction'] == 0].drop(['prediction'], axis=1)
+    return data_yes, data_no
+    
 def generate_arm_rules():
-    # data_yes, data_no = preprocess_data_for_arm()
-    data = preprocess_data_for_arm()
-    for itemset in fp.find_frequent_itemsets(data, 5):
-        print(itemset)
-    # print("no presence of heart disease")
-    # for itemset in fp.find_frequent_itemsets(data_no, len(data_no)/4):
-    #     print(itemset)
+    # accuracy of rule
+    minsup = 0.7 # adjust
+    minlen = 2 # adjust
+    txs_yes, txs_no = preprocess_data_for_arm()
+    print("no presence of heart disease")
+    for itemset in fp.find_frequent_itemsets(txs_no, int(len(txs_no)*minsup), df=True):
+        if len(itemset) > minlen:
+            print(itemset)
 
-    # print("presence of heart disease")
-    # for itemset in fp.find_frequent_itemsets(data_yes, len(data_yes)/4):
-    #     print(itemset)
+    print("\n\npresence of heart disease")
+    for itemset in fp.find_frequent_itemsets(txs_yes, int(len(txs_yes)*minsup), df=True):
+        if len(itemset) > minlen:
+            print(itemset)
 
 if __name__ == '__main__':
     generate_arm_rules()
-    
