@@ -19,11 +19,15 @@ def callMean(df):
 def callMedian(df):
     return df.median()
 
-def fillData(data_dict, fill_method = 'mode'):
+def callNone(df):
+    return -1
+
+def fillData(data_dict, fill_method = 'none'):
     switcher = {
         'mode': callMode,
         'mean': callMean,
         'median': callMedian,
+        'none': callNone
     }
     func = switcher.get(fill_method)
     output = pd.DataFrame()
@@ -34,7 +38,10 @@ def fillData(data_dict, fill_method = 'mode'):
         for column in df.iloc[:, :-1]:
             nasum = df[column].isna().sum()
             val = func(df[column])
-            df[column].fillna(val, inplace = True)
+            if fill_method != 'none':
+                df[column].fillna(val, inplace = True)
+            else:
+                df = df.dropna()
         if (output.empty):
             output = df
         else:
