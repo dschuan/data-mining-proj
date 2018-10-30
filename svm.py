@@ -10,14 +10,17 @@ from pylab import plt
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVC
 import pickle
+from pathlib import Path
+
+
 
 def gridSearchSVM(testX, testY, trainX, trainY):
 
     svc = SVC()
     param_grid = [
-      {'C': [1, 10, 100, 1000], 'kernel': ['linear']},
-      {'C': [1, 10, 100, 1000], 'gamma': [0.01, 0.001, 0.0001], 'kernel': ['rbf', 'sigmoid']},
-      {'C': [1, 10, 100, 1000], 'gamma': [0.01, 0.001, 0.0001], 'degree':[2, 3, 4], 'kernel': ['poly']}
+      {'C': [1, 10, 100], 'kernel': ['linear']},
+      {'C': [1, 10, 100], 'gamma': [0.01, 0.001, 0.0001], 'kernel': ['rbf', 'sigmoid']},
+      {'C': [1, 10, 100], 'gamma': [0.01, 0.001, 0.0001], 'degree':[2, 3, 4], 'kernel': ['poly']}
 
     ]
     gs = GridSearchCV(svc, param_grid, verbose=2, n_jobs=4)
@@ -27,20 +30,30 @@ def gridSearchSVM(testX, testY, trainX, trainY):
         pickle.dump(gs, fp)
     return score
 
-def svmPredict(testX, testY, trainX, trainY, useTrainedModel = True):
-    if not useTrainedModel:
+def svmPredict(testX, testY, trainX, trainY, modelName, gridSearch = False):
+    if gridSearch:
         gridSearchSVM(testX, testY, trainX, trainY)
-    try:
+
+    savedModelPath = './svm_' + modelName + '.pickle'
+    #look for the model
+    if Path(savedModelPath).is_file():
+        with open(savedModelPath, 'rb') as fp:
+            clf = pickle.load(fp)
+            predictions = clf.predict(testX)
+    else:
+        if not Path('svm.pickle').is_file():
+            print('svm.pickle not found, run svmPredict with gridSearch = True')
+            raise FileNotFoundError
+        print(modelName, 'has not been trained before, loading svm.pickle(model with hyperparameters tuned) and training with trainX')
         with open('svm.pickle', 'rb') as fp:
             gs = pickle.load(fp)
-    except:
-        print('\n*****************************svm.pickle not found, rerunning the gridsearch\n')
-        gridSearchSVM(testX, testY, trainX, trainY)
-    finally:
-        with open('svm.pickle', 'rb') as fp:
-            gs = pickle.load(fp)
-    predictions = gs.predict(testX)
-    return predictions, gs
+        clf = SVC(**gs.best_params_)
+        clf.fit(trainX, trainY)
+        predictions = clf.predict(testX)
+        #saving the trained model
+        with open(savedModelPath, 'wb') as fp:
+            pickle.dump(clf, fp)
+    return predictions, clf
 
 
 if __name__=='__main__':
@@ -50,10 +63,10 @@ if __name__=='__main__':
     # score = gridSearchSVM(testX, testY, trainX, trainY )
     # with open('svm.pickle', 'rb') as fp:
     #     gs = pickle.load(fp)
-    predictions, gs = svmPredict(testX, testY, trainX, trainY, False)
+    predictions, clf = svmPredict(testX, testY, trainX, trainY,  modelName="median", gridSearch=False)
     print(predictions)
     print(testY)
-    print(gs.best_params_)
+    print(clf)
 # def predictSVM(testX, testY, trainX, trainY, useTrainedModel=False):
 #     if useTrainedModel:
 #         try:

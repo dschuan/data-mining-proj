@@ -52,8 +52,8 @@ if __name__ == '__main__':
 		#gs is the grid search model that i use to find the best parameters for the svm.
 		#It automatically uses k-fold cross validation to find the best parameters
 		#we can call print(gs.best_params_) to determine what params were used for this model
-		svmPredictions, gs = svm.svmPredict(testX, testY, trainX, trainY, useTrainedModel = True)
-		print("SVMpredictions", type(svmPredictions),svmPredictions)
+		svmPredictions, clf = svm.svmPredict(testX, testY, trainX, trainY, filling, gridSearch=False)
+		print("SVMpredictions", type(svmPredictions), svmPredictions)
 		predictions.append(svmPredictions)
 		methods.append("SVMpredictions")
 
