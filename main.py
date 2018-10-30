@@ -39,7 +39,7 @@ if __name__ == '__main__':
 		#associateRuleMiningPredictions = arm.generate_rules(min_sup)
 		#print("Associate Rule Mining Predictions", associateRuleMiningPredictions)
 
-		nnPredictions = nn.neuralNet(testX, testY, trainX, trainY, useTrainedModel = True)
+		nnPredictions = nn.neuralNet(testX, testY, trainX, trainY, useTrainedModel = True,modelName = filling)
 		print("nnPredictions",type(nnPredictions),nnPredictions)
 		predictions.append(nnPredictions)
 		methods.append("nnPredictions")
