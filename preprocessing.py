@@ -68,6 +68,8 @@ if __name__ == '__main__':
     #can 'unscale' using ss.inverse_transform(X_data)
 
     X_reduced, pca, ss = performPCA(X_data, 2)
+    print(pca.explained_variance_ratio_)
+
     data_reduced = np.concatenate((X_reduced, Y_data.reshape(626,1)), axis=1)
     print(data_reduced)
     fig = plt.figure(figsize = (8,8))
