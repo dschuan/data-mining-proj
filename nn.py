@@ -4,7 +4,7 @@ import numpy as np
 import pylab as plt
 import numpy
 import pandas
-
+from pathlib import Path
 
 sources = ["cleveland","long_beach","switzerland"]
 #sources = ["cleveland"]
@@ -27,14 +27,17 @@ LABELS = ['age',
 'prediction']
 
 def neuralNet(testX, testY, trainX = [], trainY = [], useTrainedModel = False, modelName = "model"):
+	my_file = Path("./nnmodels/" + modelName+ ".ckpt.index")
+	if not my_file.is_file():
+		useTrainedModel = False
 	NUM_FEATURES = testX.shape[1]
 
 	NUM_CLASSES = 2
-	beta = 10e-11
+	beta = 10e-12
 	learning_rate = 0.06
 	epochs = 800
-	batch_size = 16
-	num_neurons = 20
+	batch_size = 8
+	num_neurons = 10
 	seed = 123
 
 	trainX = (trainX- np.mean(trainX, axis=0))/ np.std(trainX, axis=0)
@@ -110,7 +113,7 @@ def neuralNet(testX, testY, trainX = [], trainY = [], useTrainedModel = False, m
 
 	with tf.Session() as sess:
 		if(useTrainedModel):
-			saver.restore(sess, "./"  + modelName + ".ckpt")
+			saver.restore(sess, "./nnmodels/"  + modelName + ".ckpt")
 			predictions = sess.run(logits,{ x: testX})
 			return np.argmax(predictions, axis=1)
 
@@ -129,7 +132,7 @@ def neuralNet(testX, testY, trainX = [], trainY = [], useTrainedModel = False, m
 					print('iter %d: accuracy %g'%(i, train_acc[i]))
 				test_acc.append(accuracy.eval(feed_dict={x: testX, y_: testY}))
 
-			save_path = saver.save(sess, "./" + modelName+ ".ckpt")
+			save_path = saver.save(sess, "./nnmodels/" + modelName+ ".ckpt")
 			print("Model saved in path: %s" % save_path)
 
 			max_accuracy = max(test_acc)
