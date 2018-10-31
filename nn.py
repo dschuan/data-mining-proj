@@ -5,7 +5,8 @@ import pylab as plt
 import numpy
 import pandas
 from pathlib import Path
-
+import processdata as procd
+import importcsv as ic
 sources = ["cleveland","long_beach","switzerland"]
 #sources = ["cleveland"]
 
@@ -35,9 +36,9 @@ def neuralNet(testX, testY, trainX = [], trainY = [], useTrainedModel = False, m
 	NUM_CLASSES = 2
 	beta = 10e-12
 	learning_rate = 0.06
-	epochs = 800
+	epochs = 100
 	batch_size = 8
-	num_neurons = 10
+	num_neurons = 5
 	seed = 123
 
 	trainX = (trainX- np.mean(trainX, axis=0))/ np.std(trainX, axis=0)
@@ -61,49 +62,46 @@ def neuralNet(testX, testY, trainX = [], trainY = [], useTrainedModel = False, m
 
 	# Build the graph for the deep net
 
-	weights_1 = tf.Variable(tf.truncated_normal([NUM_FEATURES, num_neurons], stddev=1.0/math.sqrt(float(NUM_FEATURES))), name='weights')
-	biases_1  = tf.Variable(tf.zeros([num_neurons]), name='biases')
+	weights_1 = tf.Variable(tf.truncated_normal([NUM_FEATURES, num_neurons], stddev=1.0/math.sqrt(float(NUM_FEATURES))), name='weights_1')
+	biases_1  = tf.Variable(tf.zeros([num_neurons]), name='biases_1')
 	u_1 = tf.add(tf.matmul(x, weights_1), biases_1)
 	output_1 = tf.nn.sigmoid(u_1)
 
-	weights_2 = tf.Variable(tf.truncated_normal([num_neurons, num_neurons], stddev=1.0/math.sqrt(float(num_neurons))), name='weights')
-	biases_2  = tf.Variable(tf.zeros([num_neurons]), name='biases')
+	weights_2 = tf.Variable(tf.truncated_normal([num_neurons, num_neurons], stddev=1.0/math.sqrt(float(num_neurons))), name='weights_2')
+	biases_2  = tf.Variable(tf.zeros([num_neurons]), name='biases_2')
 	u_2 = tf.add(tf.matmul(output_1, weights_2), biases_2)
 	output_2 = tf.nn.sigmoid(u_2)
 
-	weights_3 = tf.Variable(tf.truncated_normal([num_neurons, num_neurons], stddev=1.0/math.sqrt(float(num_neurons))), name='weights')
-	biases_3  = tf.Variable(tf.zeros([num_neurons]), name='biases')
+	weights_3 = tf.Variable(tf.truncated_normal([num_neurons, num_neurons], stddev=1.0/math.sqrt(float(num_neurons))), name='weights_3')
+	biases_3  = tf.Variable(tf.zeros([num_neurons]), name='biases_3')
 	u_3 = tf.add(tf.matmul(output_2, weights_3), biases_3)
 	output_3 = tf.nn.sigmoid(u_3)
 
-	weights_4 = tf.Variable(tf.truncated_normal([num_neurons, num_neurons], stddev=1.0/math.sqrt(float(num_neurons))), name='weights')
-	biases_4  = tf.Variable(tf.zeros([num_neurons]), name='biases')
+	weights_4 = tf.Variable(tf.truncated_normal([num_neurons, num_neurons], stddev=1.0/math.sqrt(float(num_neurons))), name='weights_4')
+	biases_4  = tf.Variable(tf.zeros([num_neurons]), name='biases_4')
 	u_4 = tf.add(tf.matmul(output_3, weights_4), biases_4)
 	output_4 = tf.nn.sigmoid(u_4)
 
-	weights_5 = tf.Variable(tf.truncated_normal([num_neurons, num_neurons], stddev=1.0/math.sqrt(float(num_neurons))), name='weights')
-	biases_5  = tf.Variable(tf.zeros([num_neurons]), name='biases')
-	u_5 = tf.add(tf.matmul(output_4, weights_5), biases_5)
-	output_5 = tf.nn.sigmoid(u_5)
 
 
-	weights_6 = tf.Variable(tf.truncated_normal([num_neurons, NUM_CLASSES], stddev=1.0 / np.sqrt(num_neurons), dtype=tf.float32), name='weights_2')
-	biases_6 = tf.Variable(tf.zeros([NUM_CLASSES]), dtype=tf.float32, name='biases_2')
-	logits  = tf.matmul(output_5, weights_6) + biases_6
+	weights_5 = tf.Variable(tf.truncated_normal([num_neurons, NUM_CLASSES], stddev=1.0 / np.sqrt(num_neurons), dtype=tf.float32), name='weights_5')
+	biases_5 = tf.Variable(tf.zeros([NUM_CLASSES]), dtype=tf.float32, name='biases_5')
+	logits  = tf.matmul(output_4, weights_5) + biases_5
 
-	#reg_loss = tf.nn.l2_loss(weights_1) + tf.nn.l2_loss(weights_2) + tf.nn.l2_loss(weights_3) + tf.nn.l2_loss(weights_4) + tf.nn.l2_loss(weights_5) + tf.nn.l2_loss(weights_6)
+	reg_loss = tf.nn.l2_loss(weights_1) + tf.nn.l2_loss(weights_2) + tf.nn.l2_loss(weights_3) + tf.nn.l2_loss(weights_4) + tf.nn.l2_loss(weights_5)
 
 
 
-	#reg_loss = reg_loss*beta
+	reg_loss = reg_loss*beta
 
 
 
 	cross_entropy = tf.nn.softmax_cross_entropy_with_logits_v2(labels=y_, logits=logits)
-	loss = tf.reduce_mean(cross_entropy)# + reg_loss
+	loss = tf.reduce_mean(cross_entropy) + reg_loss
 
 	# Create the gradient descent optimizer with the given learning rate.
-	optimizer = tf.train.GradientDescentOptimizer(learning_rate)
+	#optimizer = tf.train.GradientDescentOptimizer(learning_rate)
+	optimizer = tf.train.AdamOptimizer()
 	train_op = optimizer.minimize(loss)
 
 	correct_prediction = tf.cast(tf.equal(tf.argmax(logits, 1), tf.argmax(y_, 1)), tf.float32)
@@ -139,17 +137,16 @@ def neuralNet(testX, testY, trainX = [], trainY = [], useTrainedModel = False, m
 
 			print("Final Test Accuracy = ",max_accuracy, "at epoch ", test_acc.index(max_accuracy))
 
-			# plot learning curves
-			plt.figure(1)
-			plt.plot(range(epochs), train_acc)
-			plt.xlabel(str(epochs) + ' iterations')
-			plt.ylabel('Train accuracy')
-
-			plt.figure(2)
-			plt.plot(range(epochs), test_acc)
-			plt.xlabel(str(epochs) + ' iterations')
-			plt.ylabel('test accuracy')
-			plt.show()
 
 			predictions = sess.run(logits,{ x: testX})
 			return np.argmax(predictions, axis=1)
+
+if __name__=='__main__':
+	data = ic.separateImport()
+	data = procd.fillData(data, fill_method="median")
+	testX, testY, trainX, trainY = procd.createTrainingSet(data)
+	# score = gridSearchSVM(testX, testY, trainX, trainY )
+	# with open('svm.pickle', 'rb') as fp:
+	#     gs = pickle.load(fp)
+	result = neuralNet(testX, testY, trainX, trainY)
+	print(result)
