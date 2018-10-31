@@ -4,7 +4,7 @@ import numpy as np
 import pylab as plt
 import numpy
 import pandas
-
+from pathlib import Path
 
 sources = ["cleveland","long_beach","switzerland"]
 #sources = ["cleveland"]
@@ -27,14 +27,17 @@ LABELS = ['age',
 'prediction']
 
 def neuralNet(testX, testY, trainX = [], trainY = [], useTrainedModel = False, modelName = "model"):
+	my_file = Path("./" + modelName+ ".ckpt.index")
+	if not my_file.is_file():
+		useTrainedModel = False
 	NUM_FEATURES = testX.shape[1]
 
 	NUM_CLASSES = 2
-	beta = 10e-11
+	beta = 10e-12
 	learning_rate = 0.06
 	epochs = 800
-	batch_size = 16
-	num_neurons = 20
+	batch_size = 8
+	num_neurons = 10
 	seed = 123
 
 	trainX = (trainX- np.mean(trainX, axis=0))/ np.std(trainX, axis=0)
