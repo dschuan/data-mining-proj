@@ -63,7 +63,6 @@ def reduceDimenTest():
 			# predictions.append(randforestPred)
 			# methods.append("Random forest")
 
-
 			#ensemble method using a simple majority vote of all the classifiers.
 			ensemblePred = []
 			methods.append("Ensemble")
