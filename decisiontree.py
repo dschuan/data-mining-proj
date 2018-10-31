@@ -17,15 +17,15 @@ param_grid = {
 }
 
 
-def randomForestClassify(testX, testY, trainX, trainY, best_params):
+def randomForestClassify(testX, testY, trainX, trainY, fill_method, best_params):
 	data = ic.separateImport()
-	data = procd.fillData(data, fill_method="median")
+	data = procd.fillData(data, fill_method=fill_method)
 	# in above function, fill_method has 'median', 'mode', and 'mean' options to fill data with the median, mode or mean
 
 	testX, testY, trainX, trainY = procd.createTrainingSet(data)
 	clf = RandomForestClassifier(n_estimators=best_params['n_estimators'], max_depth=best_params['max_depth'], min_samples_split=best_params['min_samples_split'], random_state=0)
 	clf.fit(trainX, trainY)
-	print("Attribute importance determination ",clf.feature_importances_)
+	print("Attribute importance determination: ",clf.feature_importances_)
 	score = clf.score(testX, testY)
 	print("Gini accuracy score of Forest Walk: ", score)
 	return clf.predict(testX)

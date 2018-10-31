@@ -57,10 +57,10 @@ def reduceDimenTest():
 
 			#best params precalculated to save time
 			#res, best_params = dt.gridSearchWrapper(testX, testY, trainX, trainY)
-			# best_params = {'n_estimators': 10, 'max_depth': 6, 'min_samples_split': 14}
-			# randforestPred = dt.randomForestClassify(testX, testY, trainX, trainY, best_params)
-			# print('Random forest',type(randforestPred), randforestPred)
-			# predictions.append(randforestPred)
+			best_params = {'n_estimators': 10, 'max_depth': 6, 'min_samples_split': 14}
+			randforestPred = dt.randomForestClassify(testX, testY, trainX, trainY, filling, best_params)
+			print('Random forest',type(randforestPred), randforestPred)
+			predictions.append(randforestPred)
 			# methods.append("Random forest")
 
 			#ensemble method using a simple majority vote of all the classifiers.
