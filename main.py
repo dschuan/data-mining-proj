@@ -12,10 +12,10 @@ from processResults import processResults
 
 def reduceDimenTest():
 	FILL_METHODS = ["mean","median","mode","none"]
-	N_COMPONENTS = [2,3,4,5,6,7,8,9]
-	for n_components in N_COMPONENTS:
+	NUM_COMPONENTS = [4,8,12]
+	for n_components in NUM_COMPONENTS:
 		for filling in FILL_METHODS:
-			print("**********************************now at ",filling, 'number of PCA dimensions', n_components)
+			print("**********************************now at ",filling, n_components)
 			data = ic.separateImport()
 			data = procd.fillData(data, fill_method=filling)
 			# in above function, fill_method has 'median', 'mode', and 'mean' options to fill data with the median, mode or mean
@@ -37,10 +37,10 @@ def reduceDimenTest():
 			#associateRuleMiningPredictions = arm.generate_rules(min_sup)
 			#print("Associate Rule Mining Predictions", associateRuleMiningPredictions)
 
-			# nnPredictions = nn.neuralNet(testX, testY, trainX, trainY, useTrainedModel = True)
-			# print("nnPredictions",type(nnPredictions),nnPredictions)
-			# predictions.append(nnPredictions)
-			# methods.append("nnPredictions")
+			nnPredictions = nn.neuralNet(testX, testY, trainX, trainY, useTrainedModel = True,modelName =  filling + str(n_components))
+			print("nnPredictions",type(nnPredictions),nnPredictions)
+			predictions.append(nnPredictions)
+			methods.append("nnPredictions")
 
 			bayesPredictions = bayesian.naiveBayes(testX, testY, trainX, trainY)
 			print("bayesPredictions",type(bayesPredictions),bayesPredictions)
@@ -57,10 +57,10 @@ def reduceDimenTest():
 
 			#best params precalculated to save time
 			#res, best_params = dt.gridSearchWrapper(testX, testY, trainX, trainY)
-			# best_params = {'n_estimators': 10, 'max_depth': 6, 'min_samples_split': 14}
-			# randforestPred = dt.randomForestClassify(testX, testY, trainX, trainY, best_params)
-			# print('Random forest',type(randforestPred), randforestPred)
-			# predictions.append(randforestPred)
+			best_params = {'n_estimators': 10, 'max_depth': 6, 'min_samples_split': 14}
+			randforestPred = dt.randomForestClassify(testX, testY, trainX, trainY, filling, best_params)
+			print('Random forest',type(randforestPred), randforestPred)
+			predictions.append(randforestPred)
 			# methods.append("Random forest")
 
 			#ensemble method using a simple majority vote of all the classifiers.
