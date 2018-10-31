@@ -12,9 +12,10 @@ from processResults import processResults
 
 def reduceDimenTest():
 	FILL_METHODS = ["mean","median","mode","none"]
-	for n_components in range(2,4):
+	N_COMPONENTS = [2,3,4,5,6,7,8,9]
+	for n_components in N_COMPONENTS:
 		for filling in FILL_METHODS:
-			print("**********************************now at ",filling, n_components)
+			print("**********************************now at ",filling, 'number of PCA dimensions', n_components)
 			data = ic.separateImport()
 			data = procd.fillData(data, fill_method=filling)
 			# in above function, fill_method has 'median', 'mode', and 'mean' options to fill data with the median, mode or mean
