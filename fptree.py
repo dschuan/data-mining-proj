@@ -11,6 +11,7 @@ def find_frequent_itemsets(transactions, minimum_support, include_support=False,
     dictionary or a set).
     If `include_support` is true, yield (itemset, support) pairs instead of
     just the itemsets.
+    If 'df' is true, the iterator will use iterrows() to iterate through the data instead 
     """
     items = defaultdict(lambda: 0) # mapping from items to their supports
 
@@ -35,6 +36,7 @@ def find_frequent_itemsets(transactions, minimum_support, include_support=False,
     # sorted in decreasing order of frequency.
     def clean_transaction(transaction):
         transaction = filter(lambda v: v in items, transaction)
+        # If same count, there is a possible issue of ordering not being consistent
         transaction = sorted(transaction, key=lambda v: items[v], reverse=True)
         return transaction
 
@@ -64,6 +66,40 @@ def find_frequent_itemsets(transactions, minimum_support, include_support=False,
     for itemset in find_with_suffix(master, []):
         yield itemset
 
+def conditional_tree_from_paths(paths):
+    """Build a conditional FP-tree from the given prefix paths."""
+    tree = FPTree()
+    condition_item = None
+    items = set()
+
+    # Import the nodes in the paths into the new tree. Only the counts of the
+    # leaf notes matter; the remaining counts will be reconstructed from the
+    # leaf counts.
+    for path in paths:
+        if condition_item is None:
+            condition_item = path[-1].item
+
+        point = tree.root
+        for node in path:
+            next_point = point.search(node.item)
+            if not next_point:
+                # Add a new node to the tree.
+                items.add(node.item)
+                count = node.count if node.item == condition_item else 0
+                next_point = FPNode(tree, node.item, count)
+                point.add(next_point)
+                tree._update_route(next_point)
+            point = next_point
+
+    assert condition_item is not None
+
+    # Calculate the counts of the non-leaf nodes.
+    for path in tree.prefix_paths(condition_item):
+        count = path[-1].count
+        for node in reversed(path[:-1]):
+            node._count += count
+
+    return tree
 
 class FPTree(object):
     """
@@ -167,41 +203,6 @@ class FPTree(object):
             print('  %r' %item)
             for node in nodes:
                 print('    %r' %node)
-
-def conditional_tree_from_paths(paths):
-    """Build a conditional FP-tree from the given prefix paths."""
-    tree = FPTree()
-    condition_item = None
-    items = set()
-
-    # Import the nodes in the paths into the new tree. Only the counts of the
-    # leaf notes matter; the remaining counts will be reconstructed from the
-    # leaf counts.
-    for path in paths:
-        if condition_item is None:
-            condition_item = path[-1].item
-
-        point = tree.root
-        for node in path:
-            next_point = point.search(node.item)
-            if not next_point:
-                # Add a new node to the tree.
-                items.add(node.item)
-                count = node.count if node.item == condition_item else 0
-                next_point = FPNode(tree, node.item, count)
-                point.add(next_point)
-                tree._update_route(next_point)
-            point = next_point
-
-    assert condition_item is not None
-
-    # Calculate the counts of the non-leaf nodes.
-    for path in tree.prefix_paths(condition_item):
-        count = path[-1].count
-        for node in reversed(path[:-1]):
-            node._count += count
-
-    return tree
 
 class FPNode(object):
     """A node in an FP tree."""

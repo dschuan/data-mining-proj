@@ -49,4 +49,4 @@ def basicImport():
 
 
 if __name__ == '__main__':
-    data = separateImport();
+    data = separateImport()

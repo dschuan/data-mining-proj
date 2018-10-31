@@ -3,14 +3,7 @@ import processdata as procd
 import pandas as pd
 import fptree as fp
 
-"""
-Outline:
-    
-    -Process data such that all continuous variables are binned into categorical variables and are distinct items based on the attribute. 1 for attribute 1 should be att1_1 and 1 for attribute 2 should be att2_1
 
-    -Collect all patterns that end at heart disease and all that do not
-
-"""
 def preprocess_data_for_arm():
     
     data = ic.separateImport()
@@ -35,33 +28,27 @@ def preprocess_data_for_arm():
     for label in ic.LABELS[:-1]:
         data[label] = label + " " + data[label].astype(str)
 
-    data['prediction'] = ["no" if x == 0 else "yes" for x in data['prediction']]
-    # data_yes = data.loc[data['prediction'] > 0].drop(['prediction'], axis=1)
-    # data_no = data.loc[data['prediction'] == 0].drop(['prediction'], axis=1)
-    # return data_yes, data_no
+    data['prediction'] = ["no heart disease" if x == 0 else "heart disease" for x in data['prediction']]
     return data
 
 def generate_arm_rules():
     # accuracy of rule
     minsup = 0.4 # adjust
-    minlen = 2 # adjust
-    # txs_yes, txs_no = preprocess_data_for_arm()
     transactions = preprocess_data_for_arm()
-    for itemset in fp.find_frequent_itemsets(transactions, int(len(transactions)*minsup), df=True):
-        if len(itemset) >= minlen:
+    for itemset in fp.find_frequent_itemsets(transactions, int(len(transactions)*minsup), include_support = True,df=True):
+        if len(itemset[0])>1:
             print(itemset)
-    # print("no presence of heart disease")
-    # for itemset in fp.find_frequent_itemsets(txs_no, int(len(txs_no)*minsup), df=True):
-    #     if len(itemset) > minlen:
-    #         print(itemset)
-
-    # print("\n\npresence of heart disease")
-    # for itemset in fp.find_frequent_itemsets(txs_yes, int(len(txs_yes)*minsup), df=True):
-    #     if len(itemset) > minlen:
-    #         print(itemset)
-
-    # what to return?
     return None
 
+def experiments():
+    
+
 if __name__ == '__main__':
-    generate_arm_rules()
+    # generate_arm_rules()
+    find_out()
+
+# to see if the results are the same as lecture example
+def test():
+    transactions = [['f','a','c','d','g','i','m','p'], ['f','a','b','c','l','m','o'], ['b','f','h','j','o'], ['b','c','k','s','p'], ['a','f','c','e','l','p','m','n']]
+    for itemset in fp.find_frequent_itemsets(transactions, 3, include_support=True):
+        print(itemset)
