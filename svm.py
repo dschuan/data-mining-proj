@@ -20,8 +20,8 @@ def gridSearchSVM(testX, testY, trainX, trainY):
     param_grid = [
       {'C': [1, 10, 100], 'kernel': ['linear']},
       {'C': [1, 10, 100], 'gamma': [0.01, 0.001, 0.0001], 'kernel': ['rbf', 'sigmoid']},
-      {'C': [1, 10, 100], 'gamma': [0.01, 0.001, 0.0001], 'degree':[2, 3], 'kernel': ['poly']},
-      {'C': [1], 'gamma': [0.01], 'degree':[4], 'kernel': ['poly']}
+      {'C': [1, 10, 100], 'gamma': [0.01, 0.001, 0.0001], 'degree':[2, 3], 'kernel': ['poly']}
+    #   {'C': [1], 'gamma': [0.01], 'degree':[4], 'kernel': ['poly']}
     ]
     gs = GridSearchCV(svc, param_grid, verbose=2, n_jobs=4)
     gs.fit(trainX, trainY)
@@ -58,10 +58,11 @@ def svmPredict(testX, testY, trainX, trainY, modelName, gridSearch = False):
 
 
 if __name__=='__main__':
-    # data = ic.separateImport()
-    # data = procd.fillData(data, fill_method="median")
-    # testX, testY, trainX, trainY = procd.createTrainingSet(data)
-    # # score = gridSearchSVM(testX, testY, trainX, trainY )
+    data = ic.separateImport()
+    data = procd.fillData(data, fill_method="median")
+    testX, testY, trainX, trainY = procd.createTrainingSet(data)
+    score = gridSearchSVM(testX, testY, trainX, trainY )
+    print(score)
     # # with open('svmModels/svm.pickle', 'rb') as fp:
     # #     gs = pickle.load(fp)
     # from pandas.tools.plotting import parallel_coordinates
@@ -70,6 +71,6 @@ if __name__=='__main__':
     # print(data)
     # parallel_coordinates(data, 'prediction')
     # plt.show()
-    with open('svmModels/svm.pickle', 'rb') as fp:
-        gs = pickle.load(fp)
-    print(gs.best_params_)
+    # with open('svmModels/svm.pickle', 'rb') as fp:
+    #     gs = pickle.load(fp)
+    # print(gs.best_params_)

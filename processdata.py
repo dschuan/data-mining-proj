@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import math
 import importcsv as ic
-
+from sklearn.model_selection import train_test_split
 def cleanData(data):
     print('number of nans\n',data.isna().sum())
 
@@ -57,19 +57,25 @@ def fillData(data_dict, fill_method = 'none'):
 # creates a data set
 def createTrainingSet(data):
     train_input = data.values
-
     X_data, Y_dataNum = train_input[:,:-1], train_input[:,-1]
     Y_dataNum = [isPositive(x) for x in Y_dataNum]
+    Y_data = np.array(Y_dataNum)
+    m = 3* X_data.shape[0] // 10
+    trainX, testX, trainY, testY = train_test_split(X_data, Y_data, test_size=m, random_state=42, stratify=Y_data)
+    # train_input = data.values
+    #
+    # X_data, Y_dataNum = train_input[:,:-1], train_input[:,-1]
+    # Y_dataNum = [isPositive(x) for x in Y_dataNum]
     # seed = 123
     # np.random.seed(seed)
     # idx = np.arange(X_data.shape[0])
     # np.random.shuffle(idx)
-    Y_data = np.array(Y_dataNum)
-    X_data = X_data[idx]
-    Y_data = Y_data[idx]
-    m = 3* X_data.shape[0] // 10
-    testX, testY =  X_data[:m], Y_data[:m]
-    trainX, trainY = X_data[m:], Y_data[m:]
+    # Y_data = np.array(Y_dataNum)
+    # X_data = X_data[idx]
+    # Y_data = Y_data[idx]
+    # m = 3* X_data.shape[0] // 10
+    # testX, testY =  X_data[:m], Y_data[:m]
+    # trainX, trainY = X_data[m:], Y_data[m:]
 
     return testX, testY, trainX, trainY
 
