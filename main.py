@@ -9,25 +9,28 @@ import preprocessing
 import svm
 from processResults import processResults, generateGraphs,generateGraphsSingle
 from collections import defaultdict
+from sklearn.model_selection import train_test_split
 #Insert main code here
 
 def reduceDimenTest():
 	FILL_METHODS = ["mean","median","mode","none"]
 	NUM_COMPONENTS = [4,8,12]
 	processedResults = defaultdict(lambda: [])
+
+
+
+
 	for n_components in NUM_COMPONENTS:
 		for filling in FILL_METHODS:
 			print("**********************************now at ",filling, n_components)
+
+			# in above function, fill_method has 'median', 'mode', and 'mean' options to fill data with the median, mode or mean
 			data = ic.separateImport()
 			data = procd.fillData(data, fill_method=filling)
-			# in above function, fill_method has 'median', 'mode', and 'mean' options to fill data with the median, mode or mean
-
 			X_data, Y_data = preprocessing.createFullSet(data)
 			X_data, pca, ss = preprocessing.performPCA(X_data, n_components)
-
 			m = 3* X_data.shape[0] // 10
-			testX, testY =  X_data[:m], Y_data[:m]
-			trainX, trainY = X_data[m:], Y_data[m:]
+			trainX, testX, trainY, testY = train_test_split(X_data, Y_data, test_size=m, random_state=42, stratify=Y_data)
 
 			#print(data)
 

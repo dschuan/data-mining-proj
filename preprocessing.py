@@ -15,13 +15,13 @@ def createFullSet(data):
     train_input = data.values
     X_data, Y_dataNum = train_input[:,:-1], train_input[:,-1]
     Y_dataNum = [isPositive(x) for x in Y_dataNum]
-    idx = np.arange(X_data.shape[0])
-    seed = 123
-    np.random.seed(seed)
-    np.random.shuffle(idx)
     Y_data = np.array(Y_dataNum)
-    X_data = X_data[idx]
-    Y_data = Y_data[idx]
+    # idx = np.arange(X_data.shape[0])
+    # seed = 123
+    # np.random.seed(seed)
+    # np.random.shuffle(idx)
+    # X_data = X_data[idx]
+    # Y_data = Y_data[idx]
 
     return X_data, Y_data
 
