@@ -49,13 +49,18 @@ if __name__ == '__main__':
 			dictionary['2'].append(y)
 
 	print("No. of 0s in Cluster 0 is " + str(dictionary['0'].count(0)))
-	print("No. of 1s in Cluster 0 is " + str(dictionary['0'].count(1)) + "\n")
+	print("No. of 1s in Cluster 0 is " + str(dictionary['0'].count(1))+"\n")
 
 	print("No. of 0s in Cluster 1 is " + str(dictionary['1'].count(0)))
-	print("No. of 1s in Cluster 1 is " + str(dictionary['1'].count(1)) + "\n")
+	print("No. of 1s in Cluster 1 is " + str(dictionary['1'].count(1))+"\n")
 
 	print("No. of 0s in Cluster 2 is " + str(dictionary['2'].count(0)))
-	print("No. of 1s in Cluster 2 is " + str(dictionary['2'].count(1)) + "\n")
+	print("No. of 1s in Cluster 2 is " + str(dictionary['2'].count(1))+"\n")
+
+	centroids = finalKM.cluster_centers_.tolist()
+	print("Coordinates of the Centroids:\n")
+	for centroid in centroids:
+		print(centroids)
 
 
 
