@@ -24,7 +24,7 @@ if __name__ == '__main__':
 	plt.xlabel('n_clusters')
 	plt.ylabel('Average Within-Cluster distance to Centroid (WCSS)')
 	#plt.show() #shows the Elbow Graph
-	print("Best number of clusters = 3")
+	print("Best number of clusters = 3\n")
 
 	#run K Means Clustering with no. of clusters = 3
 	finalKM = KMeans(n_clusters=3, init='k-means++')
@@ -48,9 +48,14 @@ if __name__ == '__main__':
 			y = Y_data[i]
 			dictionary['2'].append(y)
 
-	print(dictionary)
+	print("No. of 0s in Cluster 0 is " + str(dictionary['0'].count(0)))
+	print("No. of 1s in Cluster 0 is " + str(dictionary['0'].count(1)) + "\n")
 
+	print("No. of 0s in Cluster 1 is " + str(dictionary['1'].count(0)))
+	print("No. of 1s in Cluster 1 is " + str(dictionary['1'].count(1)) + "\n")
 
+	print("No. of 0s in Cluster 2 is " + str(dictionary['2'].count(0)))
+	print("No. of 1s in Cluster 2 is " + str(dictionary['2'].count(1)) + "\n")
 
 
 
