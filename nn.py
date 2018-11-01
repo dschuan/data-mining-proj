@@ -40,7 +40,7 @@ def neuralNet(testX, testY, trainX = [], trainY = [], useTrainedModel = False, m
 	batch_size = 8
 	num_neurons = 5
 	seed = 123
-
+	np.random.seed(seed)
 	trainX = (trainX- np.mean(trainX, axis=0))/ np.std(trainX, axis=0)
 	testX = (testX- np.mean(testX, axis=0))/ np.std(testX, axis=0)
 

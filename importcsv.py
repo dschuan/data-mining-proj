@@ -27,13 +27,12 @@ def separateImport():
     for source in sources:
         temp = pandas.read_csv(source+".csv", delimiter="," , na_values = '?', names = LABELS )
         output.append(temp)
-
+    # imports the data separately according to the file that it has been extracted from
     output = dict(zip(sources, output))
     return output
 
 def basicImport():
 
-    # sources = ["cleveland"]
 
     data = pandas.DataFrame()
     for source in sources:

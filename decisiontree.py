@@ -21,9 +21,9 @@ def randomForestClassify(testX, testY, trainX, trainY, best_params):
 
 	clf = RandomForestClassifier(n_estimators=best_params['n_estimators'], max_depth=best_params['max_depth'], min_samples_split=best_params['min_samples_split'], random_state=0)
 	clf.fit(trainX, trainY)
-	print("Attribute importance determination: ",clf.feature_importances_)
+	#print("Attribute importance determination: ",clf.feature_importances_)
 	score = clf.score(testX, testY)
-	print("Gini accuracy score of Forest Walk: ", score)
+	#print("Gini accuracy score of Forest Walk: ", score)
 	return clf.predict(testX)
 
 #fine tuning the classifier with grid search
