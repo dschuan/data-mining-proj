@@ -23,6 +23,7 @@ def callNone(df):
     return -1
 
 def fillData(data_dict, fill_method = 'none'):
+    # Allows main code to choose from the four methods of cleaning data
     switcher = {
         'mode': callMode,
         'mean': callMean,
@@ -35,6 +36,8 @@ def fillData(data_dict, fill_method = 'none'):
 
 
     for df in datas:
+        df = df.drop(['ca','thal','slope'], axis=1)
+
         for column in df.iloc[:, :-1]:
             nasum = df[column].isna().sum()
             val = func(df[column])
@@ -51,7 +54,7 @@ def fillData(data_dict, fill_method = 'none'):
 
 
 
-
+# creates a data set
 def createTrainingSet(data):
     train_input = data.values
 
