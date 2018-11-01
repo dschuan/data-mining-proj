@@ -12,11 +12,11 @@ from collections import defaultdict
 from sklearn.model_selection import train_test_split
 #Insert main code here
 
-def reduceDimenTest():
+def reduceDimenTest(extramodelNames = ''):
 	FILL_METHODS = ["mean","median","mode","none"]
-	NUM_COMPONENTS = [4,8,12]
-	processedResults = defaultdict(lambda: [])
 
+	NUM_COMPONENTS = [4,8,10]
+	processedResults = defaultdict(lambda: [])
 
 
 
@@ -44,7 +44,7 @@ def reduceDimenTest():
 
 
 
-			nnPredictions = nn.neuralNet(testX, testY, trainX, trainY, useTrainedModel = True,modelName =  filling + str(n_components))
+			nnPredictions = nn.neuralNet(testX, testY, trainX, trainY, useTrainedModel = True,modelName =  filling + str(n_components) + extramodelNames)
 			#print("nnPredictions",type(nnPredictions),nnPredictions)
 			predictions.append(nnPredictions)
 			methods.append("nnPredictions")
@@ -61,7 +61,7 @@ def reduceDimenTest():
 			#gs is the grid search model that i use to find the best parameters for the svm.
 			#It automatically uses k-fold cross validation to find the best parameters
 			#we can call print(gs.best_params_) to determine what params were used for this model
-			svmPredictions, clf = svm.svmPredict(testX, testY, trainX, trainY, filling+str(n_components), gridSearch=False)
+			svmPredictions, clf = svm.svmPredict(testX, testY, trainX, trainY, filling+str(n_components)+extramodelNames, gridSearch=False)
 			#print("SVMpredictions", type(svmPredictions), svmPredictions)
 			predictions.append(svmPredictions)
 			methods.append("SVMpredictions")
@@ -122,4 +122,4 @@ def fillMethodTest():
     print('Best number of Components for pca:', optimal_n)
 
 if __name__ == '__main__':
-	reduceDimenTest()
+	reduceDimenTest('tenDim')

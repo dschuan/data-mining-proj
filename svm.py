@@ -47,7 +47,8 @@ def svmPredict(testX, testY, trainX, trainY, modelName, gridSearch = False):
         print(modelName, 'has not been trained before, loading svm.pickle(model with hyperparameters tuned) and training with trainX')
         with open('svmModels/svm.pickle', 'rb') as fp:
             gs = pickle.load(fp)
-        clf = SVC(**gs.best_params_)
+        # clf = SVC(**gs.best_params_)
+        clf = SVC(C= 1, gamma= 0.001, kernel= 'rbf')
         clf.fit(trainX, trainY)
         predictions = clf.predict(testX)
         #saving the trained model
@@ -57,15 +58,18 @@ def svmPredict(testX, testY, trainX, trainY, modelName, gridSearch = False):
 
 
 if __name__=='__main__':
-    data = ic.separateImport()
-    data = procd.fillData(data, fill_method="median")
-    testX, testY, trainX, trainY = procd.createTrainingSet(data)
-    # score = gridSearchSVM(testX, testY, trainX, trainY )
-    # with open('svmModels/svm.pickle', 'rb') as fp:
-    #     gs = pickle.load(fp)
-    from pandas.tools.plotting import parallel_coordinates
-    from matplotlib import pyplot as plt
-
-    print(data)
-    parallel_coordinates(data, 'prediction')
-    plt.show()
+    # data = ic.separateImport()
+    # data = procd.fillData(data, fill_method="median")
+    # testX, testY, trainX, trainY = procd.createTrainingSet(data)
+    # # score = gridSearchSVM(testX, testY, trainX, trainY )
+    # # with open('svmModels/svm.pickle', 'rb') as fp:
+    # #     gs = pickle.load(fp)
+    # from pandas.tools.plotting import parallel_coordinates
+    # from matplotlib import pyplot as plt
+    #
+    # print(data)
+    # parallel_coordinates(data, 'prediction')
+    # plt.show()
+    with open('svmModels/svm.pickle', 'rb') as fp:
+        gs = pickle.load(fp)
+    print(gs.best_params_)
