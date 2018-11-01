@@ -6,7 +6,7 @@ from sklearn.cluster import KMeans
 import preprocessing
 from sklearn.model_selection import GridSearchCV
 from processResults import processResults
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
 	data = ic.separateImport()
@@ -56,6 +56,3 @@ if __name__ == '__main__':
 
 	print("No. of 0s in Cluster 2 is " + str(dictionary['2'].count(0)))
 	print("No. of 1s in Cluster 2 is " + str(dictionary['2'].count(1)) + "\n")
-
-
-

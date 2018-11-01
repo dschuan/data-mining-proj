@@ -47,8 +47,8 @@ def svmPredict(testX, testY, trainX, trainY, modelName, gridSearch = False):
         print(modelName, 'has not been trained before, loading svm.pickle(model with hyperparameters tuned) and training with trainX')
         with open('svmModels/svm.pickle', 'rb') as fp:
             gs = pickle.load(fp)
-        # clf = SVC(**gs.best_params_)
-        clf = SVC(C= 1, gamma= 0.001, kernel= 'rbf')
+        clf = SVC(**gs.best_params_)
+        # clf = SVC(C= 1, gamma= 0.001, kernel= 'rbf')
         clf.fit(trainX, trainY)
         predictions = clf.predict(testX)
         #saving the trained model
