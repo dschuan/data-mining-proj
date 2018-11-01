@@ -34,7 +34,6 @@ def fillData(data_dict, fill_method = 'none'):
     output = pd.DataFrame()
     datas = list(data_dict.values())
 
-
     for df in datas:
         df = df.drop(['ca','thal','slope'], axis=1)
 
