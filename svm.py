@@ -60,11 +60,12 @@ def svmPredict(testX, testY, trainX, trainY, modelName, gridSearch = False):
 if __name__=='__main__':
     data = ic.separateImport()
     data = procd.fillData(data, fill_method="median")
-    testX, testY, trainX, trainY = procd.createTrainingSet(data)
-    score = gridSearchSVM(testX, testY, trainX, trainY )
-    print(score)
-    # # with open('svmModels/svm.pickle', 'rb') as fp:
-    # #     gs = pickle.load(fp)
+    # testX, testY, trainX, trainY = procd.createTrainingSet(data)
+    # score = gridSearchSVM(testX, testY, trainX, trainY )
+    # print(score)
+    with open('svmModels/svm.pickle', 'rb') as fp:
+        gs = pickle.load(fp)
+        print(gs.best_params_)
     # from pandas.tools.plotting import parallel_coordinates
     # from matplotlib import pyplot as plt
     #
