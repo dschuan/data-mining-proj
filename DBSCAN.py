@@ -9,16 +9,36 @@ from sklearn.datasets.samples_generator import make_blobs
 from sklearn.preprocessing import StandardScaler
 
 if __name__=='__main__':
-	
-	data = ic.separateImport()
-	data = procd.fillData(data, fill_method='median')
-	X_data, Y_data = preprocessing.createFullSet(data)
-	# print(X_data)
-	# print(Y_data)
-	# X = StandardScaler().fit_transform(X_data)
-	X = (X_data - np.mean(X_data))/np.std(X_data)
+    data = ic.separateImport()
+    data = procd.fillData(data, fill_method='median')
+    X_data, Y_data = preprocessing.createFullSet(data)
+    # print(X_data)
+    # print(Y_data)
+    # X = StandardScaler().fit_transform(X_data)
+    X = (X_data - np.mean(X_data))/np.std(X_data)
+    db = DBSCAN(eps=45/100, min_samples=5).fit(X)
+    core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
+    core_samples_mask[db.core_sample_indices_] = True
+    labels = db.labels_
+    n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+    import visualise
+
+    count1 = 0
+    count0 = 0
+    oneandone = 0
+    for i, x in enumerate(data['fbs']):
+        if x == 1.0:
+            if labels[i] == 1:
+                count1+=1
+            else:
+                oneandone +=1
+        else:
+            count0+=1
+    print(count1, count0, oneandone)
+    print(labels)
+    visualise.parallelVisualise(data, labels, ('red','green', 'blue'), 'dbscan')
 	# print (X)
-	
+
 	# #############################################################################
 	# Compute DBSCAN
 	# max_score = 0
@@ -26,25 +46,20 @@ if __name__=='__main__':
 	# eps_num = 0
 	# for samples in range(1,50,2):
 	# 	for eps in range (5, 50, 5):
-	db = DBSCAN(eps=45/100, min_samples=5).fit(X)
-	core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
-	core_samples_mask[db.core_sample_indices_] = True
-	labels = db.labels_
-			# n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
-			# print(max_score, sample_num, eps_num)
-			# if n_clusters_ <= 1:
-			# 	continue
-			# if (max_score < metrics.silhouette_score(X, labels)):
-			# 	max_score = metrics.silhouette_score(X, labels)
-			# 	sample_num = samples
-			# 	eps_num = eps
-			
 
-	# Number of clusters in labels, ignoring noise if present.
-	n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+    		# n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+    		# print(max_score, sample_num, eps_num)
+    		# if n_clusters_ <= 1:
+    		# 	continue
+    		# if (max_score < metrics.silhouette_score(X, labels)):
+    		# 	max_score = metrics.silhouette_score(X, labels)
+    		# 	sample_num = samples
+    		# 	eps_num = eps
 
-	print(labels)
-	# unique, counts = np.unique(labels, return_counts=True)
+
+    # Number of clusters in labels, ignoring noise if present.
+
+    # unique, counts = np.unique(labels, return_counts=True)
 	# print(dict(zip(unique, counts)))
 	# print(Y_data)
 
@@ -92,4 +107,3 @@ if __name__=='__main__':
 
 	# plt.title('Estimated number of clusters: %d' % n_clusters_)
 	# plt.show()
-

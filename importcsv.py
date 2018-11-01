@@ -22,6 +22,19 @@ LABELS = ['age',
 'thal',
 'prediction']
 
+# remove ca, thal, slope
+REDUCED_LABELS = ['age',
+'sex',
+'cp',
+'trestbps',
+'chol',
+'fbs',
+'restecg',
+'thalach',
+'exang',
+'oldpeak',
+'prediction']
+
 def separateImport():
     output = []
     for source in sources:
