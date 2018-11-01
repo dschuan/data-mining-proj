@@ -22,7 +22,7 @@ def callMedian(df):
 def callNone(df):
     return -1
 
-def fillData(data_dict, fill_method = 'none'):
+def fillData(data_dict, fill_method = 'none', exclude_col = True):
     # Allows main code to choose from the four methods of cleaning data
     switcher = {
         'mode': callMode,
@@ -35,8 +35,8 @@ def fillData(data_dict, fill_method = 'none'):
     datas = list(data_dict.values())
 
     for df in datas:
-        df = df.drop(['ca','thal','slope'], axis=1)
-
+        if exclude_col == True:
+            df = df.drop(['ca','thal','slope'], axis=1)
         for column in df.iloc[:, :-1]:
             nasum = df[column].isna().sum()
             val = func(df[column])
