@@ -6,14 +6,14 @@ from itertools import chain, combinations
 
 # we want to drop the gender in our data set because it is disproportionately represented. In ARM, this is significant because ARM is determined by the frequency of itemset.
 gender_bias = True # mitigated if we use fill_method as none but this reduces dataset size
-minconf = 0.8
-minsup = 0.3
+minconf = 0.4
+minsup = 0.5
 
 #puts data into bins and rename the values so that it is readable
 def preprocess_data_for_arm():
     
     data = ic.separateImport()
-    data = procd.fillData(data, fill_method='none')
+    data = procd.fillData(data, fill_method='none', exclude_col=False)
 
     num_age_groups = 3 #min is 29 and max is 77
     data["age"] = pd.cut(data["age"], num_age_groups, labels = [str(i) for i in range(num_age_groups)])
@@ -48,9 +48,7 @@ def generate_frequent_itemsets():
 #generates rules with at least minimum confidence based on frequent itemsets generated
 def generate_confidence():
     results = [i for i in generate_frequent_itemsets()]
-    # we want to iterate through the largest itemsets first
-    # do i need this?
-    # sorted_results = results
+    # we want to iterate through the largest itemsets first to set up pruning
     sorted_results = sorted(results, key=lambda a:len(a[0]), reverse=True)
     # we also want to keep the counts of all the transactions in a dict for easy access. Here the list is sloppily converted into a string
     results_dict = dict()
@@ -77,12 +75,11 @@ def generate_confidence():
                 if confidence > minconf:
                     yield (given, result, confidence)
                 else:
-                    #again, if confidence is not high enough, just prune
+                    ##By anti-monotone property, we can stop the iteration here and prune the rest of the combinations
                     break
 
             except KeyError:
                 # if result is not found in dict, it's not frequent enough and will not even be considered
-                # Hence, by anti-monotone property, we can stop the iteration here and prune the rest of the combinations
                 break
 
 #prints rules
