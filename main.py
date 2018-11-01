@@ -94,7 +94,7 @@ def reduceDimenTest():
 				result["filling"] = filling
 				processedResults[labels].append(result)
 
-	#generateGraphs(processedResults,FILL_METHODS)
+	generateGraphs(processedResults,FILL_METHODS)
 	generateGraphsSingle(processedResults,FILL_METHODS)
 
 def fillMethodTest():
