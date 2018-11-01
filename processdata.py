@@ -57,7 +57,8 @@ def createTrainingSet(data):
 
     X_data, Y_dataNum = train_input[:,:-1], train_input[:,-1]
     Y_dataNum = [isPositive(x) for x in Y_dataNum]
-
+    seed = 123
+    np.random.seed(seed)
     idx = np.arange(X_data.shape[0])
     np.random.shuffle(idx)
     Y_data = np.array(Y_dataNum)

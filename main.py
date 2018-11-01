@@ -1,18 +1,20 @@
 #Import all the modules here
 import pandas as pd
-
+import decisiontree as dt
 import processdata as procd
 import importcsv as ic
 import bayesian
 import nn
 import preprocessing
 import svm
-from processResults import processResults
+from processResults import processResults, generateGraphs,generateGraphsSingle
+from collections import defaultdict
 #Insert main code here
 
 def reduceDimenTest():
 	FILL_METHODS = ["mean","median","mode","none"]
 	NUM_COMPONENTS = [4,8,12]
+	processedResults = defaultdict(lambda: [])
 	for n_components in NUM_COMPONENTS:
 		for filling in FILL_METHODS:
 			print("**********************************now at ",filling, n_components)
@@ -37,45 +39,60 @@ def reduceDimenTest():
 			#associateRuleMiningPredictions = arm.generate_rules(min_sup)
 			#print("Associate Rule Mining Predictions", associateRuleMiningPredictions)
 
+
+
 			nnPredictions = nn.neuralNet(testX, testY, trainX, trainY, useTrainedModel = True,modelName =  filling + str(n_components))
-			print("nnPredictions",type(nnPredictions),nnPredictions)
+			#print("nnPredictions",type(nnPredictions),nnPredictions)
 			predictions.append(nnPredictions)
 			methods.append("nnPredictions")
 
+
+
 			bayesPredictions = bayesian.naiveBayes(testX, testY, trainX, trainY)
-			print("bayesPredictions",type(bayesPredictions),bayesPredictions)
+			#print("bayesPredictions",type(bayesPredictions),bayesPredictions)
 			predictions.append(bayesPredictions)
 			methods.append("bayesPredictions")
+
+
 
 			#gs is the grid search model that i use to find the best parameters for the svm.
 			#It automatically uses k-fold cross validation to find the best parameters
 			#we can call print(gs.best_params_) to determine what params were used for this model
 			svmPredictions, clf = svm.svmPredict(testX, testY, trainX, trainY, filling+str(n_components), gridSearch=False)
-			print("SVMpredictions", type(svmPredictions), svmPredictions)
+			#print("SVMpredictions", type(svmPredictions), svmPredictions)
 			predictions.append(svmPredictions)
 			methods.append("SVMpredictions")
+
+
 
 			#best params precalculated to save time
 			#res, best_params = dt.gridSearchWrapper(testX, testY, trainX, trainY)
 			best_params = {'n_estimators': 10, 'max_depth': 6, 'min_samples_split': 14}
-			randforestPred = dt.randomForestClassify(testX, testY, trainX, trainY, filling, best_params)
-			print('Random forest',type(randforestPred), randforestPred)
+			randforestPred = dt.randomForestClassify(testX, testY, trainX, trainY, best_params)
+			#print('Random forest',type(randforestPred), randforestPred)
 			predictions.append(randforestPred)
+			methods.append("randforest")
 			# methods.append("Random forest")
 
 			#ensemble method using a simple majority vote of all the classifiers.
 			ensemblePred = []
-			methods.append("Ensemble")
+
 			for result in zip(*[item.tolist() for item in predictions]):
 				ensemblePred.append(max(set(result), key=result.count))
 
 			predictions.append(ensemblePred)
-			print("ensemblePred", ensemblePred)
+			methods.append("Ensemble")
+			#print("ensemblePred", ensemblePred)
 
 
 			for prediction, labels in zip(predictions,methods):
-				print(labels,processResults(prediction,testY,filling,labels))
+				result = processResults(prediction,testY,filling,labels)
+				result["n_components"] = n_components
+				result["filling"] = filling
+				processedResults[labels].append(result)
 
+	#generateGraphs(processedResults,FILL_METHODS)
+	generateGraphsSingle(processedResults,FILL_METHODS)
 
 def fillMethodTest():
     data = ic.separateImport()
