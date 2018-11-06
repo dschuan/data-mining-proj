@@ -9,34 +9,75 @@ from sklearn.datasets.samples_generator import make_blobs
 from sklearn.preprocessing import StandardScaler
 
 if __name__=='__main__':
-    data = ic.separateImport()
-    data = procd.fillData(data, fill_method='median')
-    X_data, Y_data = preprocessing.createFullSet(data)
-    # print(X_data)
-    # print(Y_data)
-    # X = StandardScaler().fit_transform(X_data)
-    X = (X_data - np.mean(X_data))/np.std(X_data)
-    db = DBSCAN(eps=45/100, min_samples=5).fit(X)
-    core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
-    core_samples_mask[db.core_sample_indices_] = True
-    labels = db.labels_
-    n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
-    import visualise
+	data = ic.separateImport()
+	data = procd.fillData(data, fill_method='median')
+	X_data, Y_data = preprocessing.createFullSet(data)
+	# print(data['chol'])
+	# print(X_data[:,4])
+	median = np.median(X_data[:,4])
+	empty_indices = []
+	for i in range(X_data.shape[0]):
+		if (X_data[i][4] == 0):
+			empty_indices.append(i)
+			# X_data[i][4] = median
+	# print(X_data[:,4])
+	X_data = np.delete(X_data,empty_indices,0)
+	# print(Y_data)
+	#X = StandardScaler().fit_transform(X_data)
+	X = (X_data - np.mean(X_data,axis = 0))/np.std(X_data,axis = 0)
 
-    count1 = 0
-    count0 = 0
-    oneandone = 0
-    for i, x in enumerate(data['fbs']):
-        if x == 1.0:
-            if labels[i] == 1:
-                count1+=1
-            else:
-                oneandone +=1
-        else:
-            count0+=1
-    print(count1, count0, oneandone)
-    print(labels)
-    visualise.parallelVisualise(data, labels, ('red','green', 'blue'), 'dbscan')
+
+	# max_score = 0
+	# sample_num = 0
+	# eps_num = 0
+	# for samples in range(1,100,2):
+	# 	for eps in range (5, 100, 5):
+	# 		db = DBSCAN(eps=eps/100, min_samples=samples).fit(X)
+	# 		core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
+	# 		core_samples_mask[db.core_sample_indices_] = True
+	# 		labels = db.labels_
+	# 		n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+	# 		# print(max_score, sample_num, eps_num)
+	# 		if n_clusters_ <= 1:
+	# 			continue
+	# 		if (max_score < metrics.silhouette_score(X, labels)):
+	# 			max_score = metrics.silhouette_score(X, labels)
+	# 			sample_num = samples
+	# 			eps_num = eps
+	# 			print(max_score, sample_num, eps_num)
+	# for i in range(1,10):
+	#print(X)
+	#Xa = X[:,:7]
+	#print(Xa.shape)
+	db = DBSCAN(eps=240/100, min_samples=7).fit(X)
+	# db = DBSCAN(eps=25/100, min_samples=10).fit(X)
+	core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
+	core_samples_mask[db.core_sample_indices_] = True
+	labels = db.labels_
+	n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+	import visualise
+	print(X_data.shape)
+	print(labels)
+
+	#visualise.parallelVisualise(X_data, labels, ('red','green','blue'), 'dbscan')
+	unique, counts = np.unique(labels, return_counts=True)
+	print(dict(zip(unique, counts)))
+	# zero_indices = np.where(labels == 0)
+	# one_indices = np.where(labels == 1)
+	# for i in range(1,10,1):
+	# 	curr_data = X_data[:,i]
+	# 	print(curr_data[zero_indices].shape)
+	# 	print(curr_data[one_indices].shape)
+	# 	import matplotlib.pyplot as plt
+	# 	plt.hist(curr_data[zero_indices], bins='auto')  # arguments are passed to np.histogram
+	# 	plt.hist(curr_data[one_indices], bins='auto')  # arguments are passed to np.histogram
+	# 	plt.title(list(data)[i])
+	# 	plt.show()
+	# plt.hist(Y_data[zero_indices], bins='auto')  # arguments are passed to np.histogram
+	# plt.hist(Y_data[one_indices], bins='auto')  # arguments are passed to np.histogram
+	# plt.title('prediction')
+	# plt.show()
+
 	# print (X)
 
 	# #############################################################################
@@ -47,19 +88,19 @@ if __name__=='__main__':
 	# for samples in range(1,50,2):
 	# 	for eps in range (5, 50, 5):
 
-    		# n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
-    		# print(max_score, sample_num, eps_num)
-    		# if n_clusters_ <= 1:
-    		# 	continue
-    		# if (max_score < metrics.silhouette_score(X, labels)):
-    		# 	max_score = metrics.silhouette_score(X, labels)
-    		# 	sample_num = samples
-    		# 	eps_num = eps
+			# n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+			# print(max_score, sample_num, eps_num)
+			# if n_clusters_ <= 1:
+			# 	continue
+			# if (max_score < metrics.silhouette_score(X, labels)):
+			# 	max_score = metrics.silhouette_score(X, labels)
+			# 	sample_num = samples
+			# 	eps_num = eps
 
 
-    # Number of clusters in labels, ignoring noise if present.
+	# Number of clusters in labels, ignoring noise if present.
 
-    # unique, counts = np.unique(labels, return_counts=True)
+	# unique, counts = np.unique(labels, return_counts=True)
 	# print(dict(zip(unique, counts)))
 	# print(Y_data)
 
