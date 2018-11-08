@@ -11,19 +11,32 @@ from sklearn.preprocessing import StandardScaler
 if __name__=='__main__':
 	data = ic.separateImport()
 	data = procd.fillData(data, fill_method='median')
-	X_data, Y_data = preprocessing.createFullSet(data)
-	# print(data['chol'])
-	# print(X_data[:,4])
-	median = np.median(X_data[:,4])
-	empty_indices = []
-	for i in range(X_data.shape[0]):
-		if (X_data[i][4] == 0):
+	empty_indices= []
+	for i in range(data.shape[0]):
+	# 	print (i)
+		if (data['chol'][i] == 0):
 			empty_indices.append(i)
-			# X_data[i][4] = median
-	# print(X_data[:,4])
-	X_data = np.delete(X_data,empty_indices,0)
-	# print(Y_data)
-	#X = StandardScaler().fit_transform(X_data)
+			
+	data = data.drop(data.index[empty_indices])
+	X_data, Y_data = preprocessing.createFullSet(data)
+
+	print(X_data)
+	print(Y_data)
+	print(X_data.shape)
+	print(X_data.shape)
+	# # print(data['chol'])
+	# # print(X_data[:,4])
+	# ###remove chol with 0
+	# # median = np.median(X_data[:,4])
+	# # empty_indices = []
+	# # for i in range(X_data.shape[0]):
+	# # 	if (X_data[i][4] == 0):
+	# # 		empty_indices.append(i)
+	# # 		# X_data[i][4] = median
+	# # # print(X_data[:,4])
+	# # X_data = np.delete(X_data,empty_indices,0)
+	# # print(Y_data)
+	# #X = StandardScaler().fit_transform(X_data)
 	X = (X_data - np.mean(X_data,axis = 0))/np.std(X_data,axis = 0)
 
 
@@ -56,27 +69,51 @@ if __name__=='__main__':
 	labels = db.labels_
 	n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
 	import visualise
-	print(X_data.shape)
+	print(X_data)
 	print(labels)
+	print(X_data.shape)
+	print(labels.shape)
+	print(X.shape)
 
-	#visualise.parallelVisualise(X_data, labels, ('red','green','blue'), 'dbscan')
+
+	visualise.parallelVisualise(data, labels, ('black','blue','red','green'), 'dbscan')
 	unique, counts = np.unique(labels, return_counts=True)
 	print(dict(zip(unique, counts)))
-	# zero_indices = np.where(labels == 0)
-	# one_indices = np.where(labels == 1)
-	# for i in range(1,10,1):
-	# 	curr_data = X_data[:,i]
-	# 	print(curr_data[zero_indices].shape)
-	# 	print(curr_data[one_indices].shape)
-	# 	import matplotlib.pyplot as plt
-	# 	plt.hist(curr_data[zero_indices], bins='auto')  # arguments are passed to np.histogram
-	# 	plt.hist(curr_data[one_indices], bins='auto')  # arguments are passed to np.histogram
-	# 	plt.title(list(data)[i])
-	# 	plt.show()
-	# plt.hist(Y_data[zero_indices], bins='auto')  # arguments are passed to np.histogram
-	# plt.hist(Y_data[one_indices], bins='auto')  # arguments are passed to np.histogram
-	# plt.title('prediction')
-	# plt.show()
+
+	zero_indices = np.where(labels == 0)
+	one_indices = np.where(labels == 1)
+	two_indices = np.where(labels == 2)
+	for i in range(1,10,1):
+		curr_data = X_data[:,i]
+		print(curr_data[zero_indices].shape)
+		print(curr_data[one_indices].shape)
+		print(curr_data[two_indices].shape)
+		import matplotlib.pyplot as plt
+		plt.figure()
+		plt.hist(curr_data[zero_indices], bins='auto',color='blue')  # arguments are passed to np.histogram
+		plt.title(list(data)[i] + 'cluster Zero')
+		plt.savefig(list(data)[i] + 'cluster Zero')
+		plt.figure()
+		plt.hist(curr_data[one_indices], bins='auto',color='orange')  # arguments are passed to np.histogram
+		plt.title(list(data)[i]+ 'cluster One')
+		plt.savefig(list(data)[i] + 'cluster One')
+		plt.figure()
+		plt.hist(curr_data[two_indices], bins='auto',color='green')  # arguments are passed to np.histogram
+		plt.title(list(data)[i]+ 'cluster Two')
+		plt.savefig(list(data)[i] + 'cluster Two')
+	plt.figure()
+	plt.hist(Y_data[zero_indices], bins='auto',color='blue')  # arguments are passed to np.histogram
+	plt.title('prediction' + 'cluster Zero')
+	plt.savefig('prediction cluster Zero')
+	plt.figure()
+	plt.hist(Y_data[one_indices], bins='auto',color='orange')  # arguments are passed to np.histogram
+	plt.title('prediction' + 'cluster One')
+	plt.savefig('prediction cluster One')
+	plt.figure()
+	plt.hist(Y_data[two_indices], bins='auto',color='green') 
+	plt.title('prediction' + 'cluster Two')
+	plt.savefig('prediction cluster Two')
+
 
 	# print (X)
 
