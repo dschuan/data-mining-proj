@@ -5,6 +5,7 @@ import pylab as plt
 import numpy
 import pandas
 
+# geographical locations/ file name source of our data, in csv format
 sources = ["cleveland","long_beach","switzerland"]
 
 LABELS = ['age',
@@ -22,7 +23,8 @@ LABELS = ['age',
 'thal',
 'prediction']
 
-# remove ca, thal, slope
+# removed ca, thal, slope from the original 14 attributes
+
 REDUCED_LABELS = ['age',
 'sex',
 'cp',
@@ -35,6 +37,8 @@ REDUCED_LABELS = ['age',
 'oldpeak',
 'prediction']
 
+# keeps the data separated according to geographical location, so that imputation can be done with lower bias
+
 def separateImport():
     output = []
     for source in sources:
@@ -44,6 +48,8 @@ def separateImport():
     output = dict(zip(sources, output))
     return output
 
+
+#imports all the data together
 def basicImport():
 
 

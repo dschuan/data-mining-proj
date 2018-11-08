@@ -4,10 +4,11 @@ import math
 import importcsv as ic
 from sklearn.model_selection import train_test_split
 def cleanData(data):
+    #shows the number of missing data to determine if imputation will be helpful to improve prediction accuracy
     print('number of nans\n',data.isna().sum())
-
     data = data.drop(['ca','thal','slope'], axis=1)
     data = data.dropna()
+
     return data
 
 def callMode(df):
@@ -38,12 +39,14 @@ def fillData(data_dict, fill_method = 'none', exclude_col = True):
         if exclude_col == True:
             df = df.drop(['ca','thal','slope'], axis=1)
         for column in df.iloc[:, :-1]:
-            nasum = df[column].isna().sum()
             val = func(df[column])
             if fill_method != 'none':
+                # imputes data with the fill method, if not 'none'
                 df[column].fillna(val, inplace = True)
             else:
+                # if fill method stays as 'none', just drop all NaN values
                 df = df.dropna()
+        #combines all the data together after imputation as a common dataset for analysis
         if (output.empty):
             output = df
         else:
