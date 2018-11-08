@@ -8,6 +8,7 @@ import nn
 import preprocessing
 import svm
 import pickle
+import DBSCAN
 from processResults import processResults, generateGraphs,generateGraphsSingle
 from collections import defaultdict
 from sklearn.model_selection import train_test_split
@@ -100,4 +101,5 @@ def reduceDimenTest(extramodelNames = ''):
 
 
 if __name__ == '__main__':
-	reduceDimenTest('tenDim')
+	# reduceDimenTest('tenDim')
+	DBSCAN.perform_dbscan()
