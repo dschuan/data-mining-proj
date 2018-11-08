@@ -34,7 +34,6 @@ def fillData(data_dict, fill_method = 'none', exclude_col = True):
     output = pd.DataFrame()
     datas = list(data_dict.values())
 
-
     for df in datas:
         if exclude_col == True:
             df = df.drop(['ca','thal','slope'], axis=1)
