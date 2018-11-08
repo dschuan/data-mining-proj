@@ -1,2 +1,2 @@
-model_checkpoint_path: "none12.ckpt"
-all_model_checkpoint_paths: "none12.ckpt"
+model_checkpoint_path: "none10tenDim.ckpt"
+all_model_checkpoint_paths: "none10tenDim.ckpt"

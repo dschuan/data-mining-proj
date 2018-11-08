@@ -1,4 +1,5 @@
 # data-mining-proj
+Group 31, Chuan De Sheng | Jordan Lam| Nathanael S Raj | Ng Tze Yang | Phang Jun Yu | Sarah Ye
 
 ### Instructions to Set Up
 
@@ -8,7 +9,9 @@
 3. Navigate to the project directory, and activate the environment
    For Windows: `activate mining`
    For Mac/Linux: `source activate mining`
-4. Open your favourite file editor and start hacking :)
+4. Run `python main.py` to run all classifiers. Results are printed onto terminals and graphs are produced.
+
+
 
 ### Good Project Practices
 1. In the main code (ie main.py) there is a sandbox area for you to write the code that does your part.
@@ -28,4 +31,3 @@ Have a good time :)
 2. For example, create a function `bayesPredictions = bayesian.naiveBayes(testX, testY, trainX, trainY)` where `bayesPredictions` will represent the classifications of testX.
 3. Place this function in main.py
 4. You can look at the current code in main.py to get an idea
- 

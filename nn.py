@@ -26,7 +26,7 @@ LABELS = ['age',
 'ca',
 'thal',
 'prediction']
-
+#Takes in test and train data, useTrainedModel = True uses pretrained model is a saved model is found, modelName is the name of the saved model
 def neuralNet(testX, testY, trainX = [], trainY = [], useTrainedModel = False, modelName = "model"):
 	my_file = Path("./nnmodels/" + modelName+ ".ckpt.index")
 	if not my_file.is_file():
@@ -40,7 +40,7 @@ def neuralNet(testX, testY, trainX = [], trainY = [], useTrainedModel = False, m
 	batch_size = 8
 	num_neurons = 5
 	seed = 123
-
+	np.random.seed(seed)
 	trainX = (trainX- np.mean(trainX, axis=0))/ np.std(trainX, axis=0)
 	testX = (testX- np.mean(testX, axis=0))/ np.std(testX, axis=0)
 
@@ -60,7 +60,7 @@ def neuralNet(testX, testY, trainX = [], trainY = [], useTrainedModel = False, m
 	x = tf.placeholder(tf.float32, [None, NUM_FEATURES])
 	y_ = tf.placeholder(tf.float32, [None, NUM_CLASSES])
 
-	# Build the graph for the deep net
+	# Build the graph, 4 hidden layers
 
 	weights_1 = tf.Variable(tf.truncated_normal([NUM_FEATURES, num_neurons], stddev=1.0/math.sqrt(float(NUM_FEATURES))), name='weights_1')
 	biases_1  = tf.Variable(tf.zeros([num_neurons]), name='biases_1')
@@ -88,6 +88,7 @@ def neuralNet(testX, testY, trainX = [], trainY = [], useTrainedModel = False, m
 	biases_5 = tf.Variable(tf.zeros([NUM_CLASSES]), dtype=tf.float32, name='biases_5')
 	logits  = tf.matmul(output_4, weights_5) + biases_5
 
+	#add L2 regularisation
 	reg_loss = tf.nn.l2_loss(weights_1) + tf.nn.l2_loss(weights_2) + tf.nn.l2_loss(weights_3) + tf.nn.l2_loss(weights_4) + tf.nn.l2_loss(weights_5)
 
 
@@ -110,6 +111,7 @@ def neuralNet(testX, testY, trainX = [], trainY = [], useTrainedModel = False, m
 	saver = tf.train.Saver()
 
 	with tf.Session() as sess:
+		#If useTrainedModel, load saved model with modelname
 		if(useTrainedModel):
 			saver.restore(sess, "./nnmodels/"  + modelName + ".ckpt")
 			predictions = sess.run(logits,{ x: testX})

@@ -24,6 +24,7 @@ LABELS = ['age',
 'prediction']
 
 # removed ca, thal, slope from the original 14 attributes
+
 REDUCED_LABELS = ['age',
 'sex',
 'cp',
@@ -37,6 +38,7 @@ REDUCED_LABELS = ['age',
 'prediction']
 
 # keeps the data separated according to geographical location, so that imputation can be done with lower bias
+
 def separateImport():
     output = []
     for source in sources:

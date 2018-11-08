@@ -7,27 +7,32 @@ import bayesian
 import nn
 import preprocessing
 import svm
+import pickle
 from processResults import processResults, generateGraphs,generateGraphsSingle
 from collections import defaultdict
+from sklearn.model_selection import train_test_split
 #Insert main code here
 
-def reduceDimenTest():
+def reduceDimenTest(extramodelNames = ''):
 	FILL_METHODS = ["mean","median","mode","none"]
-	NUM_COMPONENTS = [4,8,12]
+
+	#space to search in where num_components refer to the dimensionality of the processed dataset
+	NUM_COMPONENTS = [4,8,10]
 	processedResults = defaultdict(lambda: [])
+
+
+
 	for n_components in NUM_COMPONENTS:
 		for filling in FILL_METHODS:
 			print("**********************************now at ",filling, n_components)
+
+			# in above function, fill_method has 'median', 'mode', and 'mean' options to fill data with the median, mode or mean
 			data = ic.separateImport()
 			data = procd.fillData(data, fill_method=filling)
-			# in above function, fill_method has 'median', 'mode', and 'mean' options to fill data with the median, mode or mean
-
 			X_data, Y_data = preprocessing.createFullSet(data)
 			X_data, pca, ss = preprocessing.performPCA(X_data, n_components)
-
 			m = 3* X_data.shape[0] // 10
-			testX, testY =  X_data[:m], Y_data[:m]
-			trainX, trainY = X_data[m:], Y_data[m:]
+			trainX, testX, trainY, testY = train_test_split(X_data, Y_data, test_size=m, random_state=42, stratify=Y_data)
 
 			#print(data)
 
@@ -41,7 +46,7 @@ def reduceDimenTest():
 
 
 
-			nnPredictions = nn.neuralNet(testX, testY, trainX, trainY, useTrainedModel = True,modelName =  filling + str(n_components))
+			nnPredictions = nn.neuralNet(testX, testY, trainX, trainY, useTrainedModel = True,modelName =  filling + str(n_components) + extramodelNames)
 			#print("nnPredictions",type(nnPredictions),nnPredictions)
 			predictions.append(nnPredictions)
 			methods.append("nnPredictions")
@@ -58,7 +63,7 @@ def reduceDimenTest():
 			#gs is the grid search model that i use to find the best parameters for the svm.
 			#It automatically uses k-fold cross validation to find the best parameters
 			#we can call print(gs.best_params_) to determine what params were used for this model
-			svmPredictions, clf = svm.svmPredict(testX, testY, trainX, trainY, filling+str(n_components), gridSearch=False)
+			svmPredictions, clf = svm.svmPredict(testX, testY, trainX, trainY, filling+str(n_components)+extramodelNames, gridSearch=False)
 			#print("SVMpredictions", type(svmPredictions), svmPredictions)
 			predictions.append(svmPredictions)
 			methods.append("SVMpredictions")
@@ -89,34 +94,10 @@ def reduceDimenTest():
 				result["n_components"] = n_components
 				result["filling"] = filling
 				processedResults[labels].append(result)
-
-	#generateGraphs(processedResults,FILL_METHODS)
 	generateGraphsSingle(processedResults,FILL_METHODS)
-
-def fillMethodTest():
-    data = ic.separateImport()
-    data = procd.fillData(data, fill_method="median")
-    # in above function, fill_method has 'median', 'mode', and 'mean' options to fill data with the median, mode or mean
-
-    testX, testY, trainX, trainY = procd.createTrainingSet(data)
-    print(data)
-
-    print("training set size: ", trainX.shape[0], " test set size: ", testX.shape[0] )
+	generateGraphs(processedResults,FILL_METHODS)
 
 
-    nnPredictions = nn.neuralNet(testX, testY, trainX, trainY, useTrainedModel = True)
-    print("nnPredictions",nnPredictions)
-
-    bayesPredictions = bayesian.naiveBayes(testX, testY, trainX, trainY)
-    print("bayesPredictions",bayesPredictions)
-
-    predictions, gs = svm.svmPredict(testX, testY, trainX, trainY, useTrainedModel = True)
-    print("SVMpredictions", predictions)
-    #gs is the grid search model that i use to find the best parameters for the svm. It automatically uses
-
-    X_data, Y_data = preprocessing.createFullSet(data)
-    optimal_n, X_reduced, pca, ss = preprocessing.manualSearchPCA(X_data)
-    print('Best number of Components for pca:', optimal_n)
 
 if __name__ == '__main__':
-	reduceDimenTest()
+	reduceDimenTest('tenDim')
