@@ -6,7 +6,7 @@ from itertools import chain, combinations
 
 # we want to drop the gender in our data set because it is disproportionately represented. In ARM, this is significant because ARM is determined by the frequency of itemset.
 gender_bias = True # mitigated if we use fill_method as none but this reduces dataset size
-minconf = 0.4
+minconf = 0.7
 minsup = 0.5
 
 #puts data into bins and rename the values so that it is readable
