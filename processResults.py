@@ -4,6 +4,8 @@ import pylab as plt
 from matplotlib.pyplot import cm
 import numpy as np
 
+
+#This module produces graaphs!
 def processResults(prediction,testY,filling,method):
 
 

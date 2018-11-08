@@ -7,6 +7,7 @@ import bayesian
 import nn
 import preprocessing
 import svm
+import pickle
 from processResults import processResults, generateGraphs,generateGraphsSingle
 from collections import defaultdict
 from sklearn.model_selection import train_test_split
@@ -15,6 +16,7 @@ from sklearn.model_selection import train_test_split
 def reduceDimenTest(extramodelNames = ''):
 	FILL_METHODS = ["mean","median","mode","none"]
 
+	#space to search in where num_components refer to the dimensionality of the processed dataset
 	NUM_COMPONENTS = [4,8,10]
 	processedResults = defaultdict(lambda: [])
 
@@ -92,34 +94,10 @@ def reduceDimenTest(extramodelNames = ''):
 				result["n_components"] = n_components
 				result["filling"] = filling
 				processedResults[labels].append(result)
-
-	generateGraphs(processedResults,FILL_METHODS)
 	generateGraphsSingle(processedResults,FILL_METHODS)
-
-def fillMethodTest():
-    data = ic.separateImport()
-    data = procd.fillData(data, fill_method="median")
-    # in above function, fill_method has 'median', 'mode', and 'mean' options to fill data with the median, mode or mean
-
-    testX, testY, trainX, trainY = procd.createTrainingSet(data)
-    print(data)
-
-    print("training set size: ", trainX.shape[0], " test set size: ", testX.shape[0] )
+	generateGraphs(processedResults,FILL_METHODS)
 
 
-    nnPredictions = nn.neuralNet(testX, testY, trainX, trainY, useTrainedModel = True)
-    print("nnPredictions",nnPredictions)
-
-    bayesPredictions = bayesian.naiveBayes(testX, testY, trainX, trainY)
-    print("bayesPredictions",bayesPredictions)
-
-    predictions, gs = svm.svmPredict(testX, testY, trainX, trainY, useTrainedModel = True)
-    print("SVMpredictions", predictions)
-    #gs is the grid search model that i use to find the best parameters for the svm. It automatically uses
-
-    X_data, Y_data = preprocessing.createFullSet(data)
-    optimal_n, X_reduced, pca, ss = preprocessing.manualSearchPCA(X_data)
-    print('Best number of Components for pca:', optimal_n)
 
 if __name__ == '__main__':
 	reduceDimenTest('tenDim')
