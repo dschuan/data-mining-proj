@@ -1,3 +1,5 @@
+# referenced from https://github.com/enaeseth/python-fp-growth
+
 from collections import defaultdict, namedtuple
 
 def find_frequent_itemsets(transactions, minimum_support, include_support=False, df=False):

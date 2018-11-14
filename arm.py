@@ -3,51 +3,52 @@ import processdata as procd
 import pandas as pd
 import fptree as fp
 from itertools import chain, combinations
+import sys
 
 # we want to drop the gender in our data set because it is disproportionately represented. In ARM, this is significant because ARM is determined by the frequency of itemset.
 gender_bias = True # mitigated if we use fill_method as none but this reduces dataset size
-minconf = 0.7
-minsup = 0.5
 
 #puts data into bins and rename the values so that it is readable
+#bins are numbered from 0 onwards. Lower numbered bin represents a lower range of values
 def preprocess_data_for_arm():
     
     data = ic.separateImport()
     data = procd.fillData(data, fill_method='none', exclude_col=False)
 
-    num_age_groups = 3 #min is 29 and max is 77
+    num_age_groups = 2 #min is 29 and max is 77
     data["age"] = pd.cut(data["age"], num_age_groups, labels = [str(i) for i in range(num_age_groups)])
     
     num_trestbps_groups = 3 #min is 94 and max is 200
-    data["trestbps"] = pd.cut(data["trestbps"], num_age_groups, labels = [str(i) for i in range(num_trestbps_groups)])
+    data["trestbps"] = pd.cut(data["trestbps"], num_trestbps_groups, labels = [str(i) for i in range(num_trestbps_groups)])
 
-    num_chol_groups = 3 #min is 126 and max is 564
+    num_chol_groups = 4 #min is 126 and max is 564
     data["chol"] = pd.cut(data["chol"], num_chol_groups, labels = [str(i) for i in range(num_chol_groups)])
 
-    num_oldpeak_groups = 3 #min is 0 and max is 6.2
+    num_oldpeak_groups = 4 #min is 0 and max is 6.2
     data["oldpeak"] = pd.cut(data["oldpeak"], num_oldpeak_groups, labels = [str(i) for i in range(num_oldpeak_groups)])
 
     num_thalach_groups = 3 #min is 71 and max is 202
     data["thalach"] = pd.cut(data["thalach"], num_thalach_groups, labels = [str(i) for i in range(num_thalach_groups)])
     
-    # attach string to all values except prediction column
+    # attach string to all values except prediction column so that it becomes a unique item and also more readable
     for label in ic.LABELS[:-1]:
         data[label] = label + " " + data[label].astype(str)
 
+    # no need to consider extent of heart disease - we just want the presence of heart disease
     data['prediction'] = ["no heart disease" if x == 0 else "heart disease" for x in data['prediction']]
     if gender_bias:
         data = data.drop(columns = ['sex'])
     return data
 
 # generates frequent itemsets using fptree
-def generate_frequent_itemsets():
+def generate_frequent_itemsets(minsup):
     transactions = preprocess_data_for_arm()
     for itemset in fp.find_frequent_itemsets(transactions, int(len(transactions)*minsup), include_support = True,df=True):
         yield itemset
 
 #generates rules with at least minimum confidence based on frequent itemsets generated
-def generate_confidence():
-    results = [i for i in generate_frequent_itemsets()]
+def generate_confidence(minsup, minconf):
+    results = [i for i in generate_frequent_itemsets(minsup)]
     # we want to iterate through the largest itemsets first to set up pruning
     sorted_results = sorted(results, key=lambda a:len(a[0]), reverse=True)
     # we also want to keep the counts of all the transactions in a dict for easy access. Here the list is sloppily converted into a string
@@ -69,7 +70,9 @@ def generate_confidence():
                     given.remove(i)
                 if (given is None or len(given) < 1):
                     break
+                # convert given into dict key
                 key_itemset = ''.join(i for i in given)
+                # get the count
                 _count = results_dict[key_itemset]
                 confidence = count/_count
                 if confidence > minconf:
@@ -83,22 +86,16 @@ def generate_confidence():
                 break
 
 #prints rules
-def print_rules():
-    rules = list(generate_confidence())
+def print_rules(minsup=0.5, minconf=0.7):
+    rules = list(generate_confidence(minsup, minconf))
     rules.sort(key=lambda rule: rule[2], reverse=True)
     for given, rule, confidence in rules:
         print("{} --> {} confidence: {:.2%}".format(given, rule, confidence))
 
 #prints frequent itemset
-def print_frequent_itemsets():
-    for itemset in generate_frequent_itemsets():
+def print_frequent_itemsets(minsup=0.5):
+    for itemset in generate_frequent_itemsets(minsup):
         print(itemset)
-
-
-def test_sex():
-    data = preprocess_data_for_arm()
-    print(len(data))
-    print(len(data.loc[data['sex']=='sex 1.0']))
 
 def powerset(iterable):
     # powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)
@@ -111,8 +108,3 @@ def test():
     transactions = [['f','a','c','d','g','i','m','p'], ['f','a','b','c','l','m','o'], ['b','f','h','j','o'], ['b','c','k','s','p'], ['a','f','c','e','l','p','m','n']]
     for itemset in fp.find_frequent_itemsets(transactions, 3, include_support=True):
         print(itemset)
-
-if __name__ == '__main__':
-    print_rules()
-    # print_frequent_itemsets()
-    # test_sex()

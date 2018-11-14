@@ -7,6 +7,7 @@ import bayesian
 import nn
 import preprocessing
 import svm
+import arm as arm
 from processResults import processResults, generateGraphs,generateGraphsSingle
 from collections import defaultdict
 from sklearn.model_selection import train_test_split
@@ -121,5 +122,12 @@ def fillMethodTest():
     optimal_n, X_reduced, pca, ss = preprocessing.manualSearchPCA(X_data)
     print('Best number of Components for pca:', optimal_n)
 
+def generate_association_rules(minsup=0.5, minconf=0.7):
+	# print("(Itemset, Count)")
+	# arm.print_frequent_itemsets(minsup)
+	print("Rules generated from ARM with {} min support and {} min confidence:".format(minsup, minconf))
+	arm.print_rules(minsup, minconf)
+
 if __name__ == '__main__':
-	reduceDimenTest('tenDim')
+	# reduceDimenTest('tenDim')
+	generate_association_rules(0.45, 0.75)
