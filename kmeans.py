@@ -55,9 +55,6 @@ if __name__ == '__main__':
 	print("No. of 1s in Cluster 1 is " + str(dictionary['1'].count(1))+"\n")
 
 	print("No. of 0s in Cluster 2 is " + str(dictionary['2'].count(0)))
-<<<<<<< HEAD
-	print("No. of 1s in Cluster 2 is " + str(dictionary['2'].count(1)) + "\n")
-=======
 	print("No. of 1s in Cluster 2 is " + str(dictionary['2'].count(1))+"\n")
 
 	centroids = finalKM.cluster_centers_.tolist()
@@ -65,6 +62,3 @@ if __name__ == '__main__':
 	for centroid in centroids:
 		print(centroids)
 
-
-
->>>>>>> 6faa925f0b269389d43e0b070d1a6ba870251156
